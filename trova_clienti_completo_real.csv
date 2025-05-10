@@ -1,0 +1,207 @@
+Regione,Città,Categoria,Tipo,Budget (€),Prezzo Acquisto (€)
+Abruzzo,L'Aquila,Impianto Fotovoltaico,Appuntamento,11392,80.0
+Abruzzo,L'Aquila,Infissi e Serramenti,Appuntamento,7910,80.0
+Abruzzo,Pescara,Infissi e Serramenti,Lead da chiamare,14497,40.0
+Abruzzo,Pescara,Infissi e Serramenti,Contratto,14336,1433.6
+Abruzzo,Pescara,Domotica,Appuntamento,6780,80.0
+Abruzzo,Pescara,Manutenzione,Contratto,4956,495.6
+Abruzzo,Chieti,Infissi e Serramenti,Contratto,12047,1204.7
+Abruzzo,Chieti,Domotica,Contratto,7959,795.9
+Abruzzo,Teramo,Ristrutturazione,Lead da chiamare,13649,40.0
+Abruzzo,Teramo,Domotica,Contratto,8457,845.7
+Abruzzo,Teramo,Domotica,Appuntamento,3055,80.0
+Basilicata,Potenza,Ristrutturazione,Appuntamento,3990,80.0
+Basilicata,Potenza,Manutenzione,Appuntamento,12205,80.0
+Basilicata,Potenza,Infissi e Serramenti,Contratto,13742,1374.2
+Basilicata,Matera,Domotica,Appuntamento,12437,80.0
+Basilicata,Matera,Infissi e Serramenti,Appuntamento,7537,80.0
+Basilicata,Matera,Impianto Fotovoltaico,Appuntamento,12046,80.0
+Basilicata,Matera,Manutenzione,Lead da chiamare,7850,40.0
+Calabria,Catanzaro,Ristrutturazione,Appuntamento,6326,80.0
+Calabria,Catanzaro,Ristrutturazione,Appuntamento,10653,80.0
+Calabria,Reggio Calabria,Domotica,Contratto,12692,1269.2
+Calabria,Reggio Calabria,Ristrutturazione,Appuntamento,13068,80.0
+Calabria,Reggio Calabria,Ristrutturazione,Appuntamento,13485,80.0
+Calabria,Cosenza,Domotica,Contratto,13183,1318.3
+Calabria,Cosenza,Impianto Fotovoltaico,Contratto,13638,1363.8
+Calabria,Cosenza,Domotica,Contratto,3028,302.8
+Calabria,Cosenza,Domotica,Contratto,5612,561.2
+Campania,Napoli,Infissi e Serramenti,Contratto,14237,1423.7
+Campania,Napoli,Domotica,Appuntamento,1974,80.0
+Campania,Salerno,Domotica,Contratto,8083,808.3
+Campania,Salerno,Domotica,Lead da chiamare,4875,40.0
+Campania,Salerno,Ristrutturazione,Lead da chiamare,11129,40.0
+Campania,Caserta,Infissi e Serramenti,Contratto,2318,231.8
+Campania,Caserta,Impianto Fotovoltaico,Contratto,13990,1399.0
+Campania,Caserta,Manutenzione,Lead da chiamare,10821,40.0
+Campania,Caserta,Ristrutturazione,Appuntamento,11328,80.0
+Campania,Avellino,Ristrutturazione,Contratto,13217,1321.7
+Campania,Avellino,Impianto Fotovoltaico,Lead da chiamare,13657,40.0
+Campania,Benevento,Ristrutturazione,Appuntamento,8217,80.0
+Campania,Benevento,Ristrutturazione,Lead da chiamare,9115,40.0
+Campania,Benevento,Impianto Fotovoltaico,Appuntamento,13755,80.0
+Campania,Benevento,Manutenzione,Appuntamento,14834,80.0
+Emilia-Romagna,Bologna,Ristrutturazione,Contratto,11910,1191.0
+Emilia-Romagna,Bologna,Ristrutturazione,Appuntamento,2956,80.0
+Emilia-Romagna,Modena,Impianto Fotovoltaico,Lead da chiamare,10933,40.0
+Emilia-Romagna,Modena,Manutenzione,Contratto,10736,1073.6
+Emilia-Romagna,Parma,Impianto Fotovoltaico,Appuntamento,5071,80.0
+Emilia-Romagna,Parma,Ristrutturazione,Contratto,3947,394.7
+Emilia-Romagna,Reggio Emilia,Infissi e Serramenti,Contratto,2143,214.3
+Emilia-Romagna,Reggio Emilia,Ristrutturazione,Appuntamento,11662,80.0
+Emilia-Romagna,Reggio Emilia,Impianto Fotovoltaico,Contratto,5084,508.4
+Emilia-Romagna,Reggio Emilia,Infissi e Serramenti,Appuntamento,14603,80.0
+Emilia-Romagna,Ferrara,Manutenzione,Contratto,9746,974.6
+Emilia-Romagna,Ferrara,Manutenzione,Contratto,14306,1430.6
+Emilia-Romagna,Ferrara,Domotica,Lead da chiamare,10131,40.0
+Friuli-Venezia Giulia,Trieste,Ristrutturazione,Lead da chiamare,7936,40.0
+Friuli-Venezia Giulia,Trieste,Manutenzione,Lead da chiamare,6191,40.0
+Friuli-Venezia Giulia,Trieste,Ristrutturazione,Contratto,2518,251.8
+Friuli-Venezia Giulia,Udine,Domotica,Contratto,3237,323.7
+Friuli-Venezia Giulia,Udine,Ristrutturazione,Lead da chiamare,2710,40.0
+Friuli-Venezia Giulia,Udine,Manutenzione,Contratto,1464,146.4
+Friuli-Venezia Giulia,Udine,Ristrutturazione,Contratto,6452,645.2
+Friuli-Venezia Giulia,Pordenone,Infissi e Serramenti,Appuntamento,12376,80.0
+Friuli-Venezia Giulia,Pordenone,Manutenzione,Contratto,9832,983.2
+Friuli-Venezia Giulia,Pordenone,Impianto Fotovoltaico,Appuntamento,5374,80.0
+Lazio,Roma,Domotica,Appuntamento,2423,80.0
+Lazio,Roma,Manutenzione,Contratto,9342,934.2
+Lazio,Latina,Domotica,Appuntamento,12149,80.0
+Lazio,Latina,Manutenzione,Appuntamento,11362,80.0
+Lazio,Frosinone,Infissi e Serramenti,Appuntamento,13781,80.0
+Lazio,Frosinone,Manutenzione,Lead da chiamare,2246,40.0
+Lazio,Frosinone,Infissi e Serramenti,Appuntamento,4536,80.0
+Lazio,Viterbo,Domotica,Appuntamento,5087,80.0
+Lazio,Viterbo,Domotica,Contratto,13416,1341.6
+Lazio,Viterbo,Manutenzione,Contratto,1419,141.9
+Lazio,Rieti,Impianto Fotovoltaico,Lead da chiamare,8679,40.0
+Lazio,Rieti,Manutenzione,Contratto,1225,122.5
+Lazio,Rieti,Impianto Fotovoltaico,Appuntamento,11043,80.0
+Liguria,Genova,Impianto Fotovoltaico,Lead da chiamare,4249,40.0
+Liguria,Genova,Manutenzione,Appuntamento,5246,80.0
+Liguria,Genova,Domotica,Appuntamento,11220,80.0
+Liguria,La Spezia,Domotica,Contratto,2637,263.7
+Liguria,La Spezia,Ristrutturazione,Lead da chiamare,8184,40.0
+Liguria,Savona,Domotica,Contratto,10145,1014.5
+Liguria,Savona,Ristrutturazione,Lead da chiamare,2950,40.0
+Lombardia,Milano,Ristrutturazione,Contratto,6482,648.2
+Lombardia,Milano,Infissi e Serramenti,Lead da chiamare,1625,40.0
+Lombardia,Milano,Ristrutturazione,Lead da chiamare,12472,40.0
+Lombardia,Brescia,Infissi e Serramenti,Contratto,6061,606.1
+Lombardia,Brescia,Manutenzione,Lead da chiamare,2613,40.0
+Lombardia,Bergamo,Impianto Fotovoltaico,Lead da chiamare,8519,40.0
+Lombardia,Bergamo,Infissi e Serramenti,Appuntamento,1386,80.0
+Lombardia,Bergamo,Impianto Fotovoltaico,Appuntamento,1178,80.0
+Lombardia,Como,Impianto Fotovoltaico,Lead da chiamare,11350,40.0
+Lombardia,Como,Ristrutturazione,Lead da chiamare,10779,40.0
+Lombardia,Monza,Domotica,Appuntamento,4600,80.0
+Lombardia,Monza,Manutenzione,Lead da chiamare,6456,40.0
+Marche,Ancona,Infissi e Serramenti,Lead da chiamare,11640,40.0
+Marche,Ancona,Domotica,Contratto,3741,374.1
+Marche,Ancona,Manutenzione,Contratto,8173,817.3
+Marche,Pesaro,Impianto Fotovoltaico,Contratto,1743,174.3
+Marche,Pesaro,Domotica,Lead da chiamare,1553,40.0
+Marche,Macerata,Ristrutturazione,Contratto,13674,1367.4
+Marche,Macerata,Ristrutturazione,Appuntamento,3350,80.0
+Molise,Campobasso,Ristrutturazione,Contratto,10346,1034.6
+Molise,Campobasso,Impianto Fotovoltaico,Appuntamento,4847,80.0
+Molise,Campobasso,Ristrutturazione,Appuntamento,7023,80.0
+Molise,Campobasso,Manutenzione,Appuntamento,13736,80.0
+Molise,Isernia,Infissi e Serramenti,Lead da chiamare,6971,40.0
+Molise,Isernia,Domotica,Contratto,4537,453.7
+Molise,Isernia,Manutenzione,Appuntamento,13167,80.0
+Molise,Isernia,Impianto Fotovoltaico,Contratto,9237,923.7
+Piemonte,Torino,Domotica,Contratto,7689,768.9
+Piemonte,Torino,Infissi e Serramenti,Contratto,12814,1281.4
+Piemonte,Alessandria,Domotica,Lead da chiamare,11784,40.0
+Piemonte,Alessandria,Infissi e Serramenti,Appuntamento,5499,80.0
+Piemonte,Novara,Impianto Fotovoltaico,Appuntamento,14474,80.0
+Piemonte,Novara,Impianto Fotovoltaico,Lead da chiamare,14572,40.0
+Piemonte,Cuneo,Ristrutturazione,Appuntamento,8975,80.0
+Piemonte,Cuneo,Impianto Fotovoltaico,Lead da chiamare,3897,40.0
+Piemonte,Cuneo,Ristrutturazione,Lead da chiamare,8868,40.0
+Piemonte,Cuneo,Infissi e Serramenti,Contratto,4269,426.9
+Puglia,Bari,Ristrutturazione,Contratto,10705,1070.5
+Puglia,Bari,Manutenzione,Lead da chiamare,1102,40.0
+Puglia,Bari,Domotica,Contratto,7189,718.9
+Puglia,Bari,Manutenzione,Lead da chiamare,5964,40.0
+Puglia,Lecce,Domotica,Contratto,12645,1264.5
+Puglia,Lecce,Ristrutturazione,Contratto,6411,641.1
+Puglia,Lecce,Infissi e Serramenti,Appuntamento,3275,80.0
+Puglia,Lecce,Domotica,Contratto,6319,631.9
+Puglia,Taranto,Ristrutturazione,Lead da chiamare,8851,40.0
+Puglia,Taranto,Manutenzione,Contratto,6035,603.5
+Puglia,Brindisi,Impianto Fotovoltaico,Appuntamento,8500,80.0
+Puglia,Brindisi,Manutenzione,Lead da chiamare,14585,40.0
+Puglia,Brindisi,Infissi e Serramenti,Lead da chiamare,4417,40.0
+Puglia,Brindisi,Infissi e Serramenti,Appuntamento,1226,80.0
+Sardegna,Cagliari,Impianto Fotovoltaico,Lead da chiamare,7462,40.0
+Sardegna,Cagliari,Impianto Fotovoltaico,Lead da chiamare,13586,40.0
+Sardegna,Cagliari,Impianto Fotovoltaico,Appuntamento,14706,80.0
+Sardegna,Cagliari,Manutenzione,Lead da chiamare,7853,40.0
+Sardegna,Sassari,Infissi e Serramenti,Lead da chiamare,14681,40.0
+Sardegna,Sassari,Ristrutturazione,Lead da chiamare,13250,40.0
+Sardegna,Sassari,Impianto Fotovoltaico,Lead da chiamare,4021,40.0
+Sardegna,Oristano,Domotica,Appuntamento,5491,80.0
+Sardegna,Oristano,Manutenzione,Appuntamento,9458,80.0
+Sicilia,Palermo,Impianto Fotovoltaico,Appuntamento,3086,80.0
+Sicilia,Palermo,Impianto Fotovoltaico,Appuntamento,2593,80.0
+Sicilia,Palermo,Ristrutturazione,Lead da chiamare,2606,40.0
+Sicilia,Palermo,Domotica,Appuntamento,2649,80.0
+Sicilia,Catania,Infissi e Serramenti,Contratto,10192,1019.2
+Sicilia,Catania,Infissi e Serramenti,Contratto,9914,991.4
+Sicilia,Catania,Infissi e Serramenti,Lead da chiamare,2618,40.0
+Sicilia,Messina,Infissi e Serramenti,Contratto,12402,1240.2
+Sicilia,Messina,Impianto Fotovoltaico,Lead da chiamare,7762,40.0
+Sicilia,Trapani,Impianto Fotovoltaico,Contratto,6644,664.4
+Sicilia,Trapani,Domotica,Contratto,8128,812.8
+Sicilia,Siracusa,Domotica,Lead da chiamare,11611,40.0
+Sicilia,Siracusa,Domotica,Contratto,2910,291.0
+Sicilia,Siracusa,Infissi e Serramenti,Appuntamento,12296,80.0
+Sicilia,Siracusa,Manutenzione,Contratto,5388,538.8
+Toscana,Firenze,Impianto Fotovoltaico,Contratto,11957,1195.7
+Toscana,Firenze,Manutenzione,Lead da chiamare,9800,40.0
+Toscana,Firenze,Impianto Fotovoltaico,Lead da chiamare,12958,40.0
+Toscana,Firenze,Infissi e Serramenti,Appuntamento,12084,80.0
+Toscana,Pisa,Ristrutturazione,Contratto,5708,570.8
+Toscana,Pisa,Impianto Fotovoltaico,Appuntamento,1203,80.0
+Toscana,Pisa,Domotica,Contratto,3668,366.8
+Toscana,Livorno,Domotica,Contratto,11946,1194.6
+Toscana,Livorno,Impianto Fotovoltaico,Appuntamento,1670,80.0
+Toscana,Arezzo,Ristrutturazione,Lead da chiamare,10009,40.0
+Toscana,Arezzo,Manutenzione,Appuntamento,12060,80.0
+Toscana,Arezzo,Infissi e Serramenti,Contratto,12813,1281.3
+Toscana,Arezzo,Domotica,Appuntamento,7458,80.0
+Toscana,Siena,Domotica,Lead da chiamare,10006,40.0
+Toscana,Siena,Impianto Fotovoltaico,Appuntamento,14418,80.0
+Toscana,Siena,Ristrutturazione,Lead da chiamare,7727,40.0
+Toscana,Siena,Infissi e Serramenti,Appuntamento,12262,80.0
+Trentino-Alto Adige,Trento,Manutenzione,Appuntamento,1603,80.0
+Trentino-Alto Adige,Trento,Domotica,Appuntamento,1022,80.0
+Trentino-Alto Adige,Trento,Infissi e Serramenti,Appuntamento,11342,80.0
+Trentino-Alto Adige,Bolzano,Infissi e Serramenti,Contratto,6772,677.2
+Trentino-Alto Adige,Bolzano,Impianto Fotovoltaico,Contratto,1915,191.5
+Umbria,Perugia,Ristrutturazione,Contratto,13400,1340.0
+Umbria,Perugia,Manutenzione,Lead da chiamare,12267,40.0
+Umbria,Perugia,Manutenzione,Contratto,6219,621.9
+Umbria,Terni,Manutenzione,Contratto,13787,1378.7
+Umbria,Terni,Impianto Fotovoltaico,Lead da chiamare,7562,40.0
+Umbria,Terni,Impianto Fotovoltaico,Contratto,12577,1257.7
+Valle d'Aosta,Aosta,Manutenzione,Lead da chiamare,5275,40.0
+Valle d'Aosta,Aosta,Manutenzione,Appuntamento,9046,80.0
+Valle d'Aosta,Aosta,Impianto Fotovoltaico,Appuntamento,13440,80.0
+Valle d'Aosta,Aosta,Ristrutturazione,Lead da chiamare,11320,40.0
+Veneto,Venezia,Ristrutturazione,Appuntamento,3067,80.0
+Veneto,Venezia,Impianto Fotovoltaico,Appuntamento,2949,80.0
+Veneto,Venezia,Ristrutturazione,Appuntamento,7248,80.0
+Veneto,Verona,Infissi e Serramenti,Appuntamento,3535,80.0
+Veneto,Verona,Manutenzione,Lead da chiamare,6533,40.0
+Veneto,Verona,Domotica,Appuntamento,1909,80.0
+Veneto,Padova,Infissi e Serramenti,Contratto,9613,961.3
+Veneto,Padova,Impianto Fotovoltaico,Contratto,10584,1058.4
+Veneto,Padova,Domotica,Lead da chiamare,7064,40.0
+Veneto,Padova,Infissi e Serramenti,Appuntamento,2944,80.0
+Veneto,Vicenza,Impianto Fotovoltaico,Appuntamento,7473,80.0
+Veneto,Vicenza,Impianto Fotovoltaico,Appuntamento,9399,80.0
+Veneto,Treviso,Infissi e Serramenti,Appuntamento,14951,80.0
+Veneto,Treviso,Impianto Fotovoltaico,Contratto,13881,1388.1
