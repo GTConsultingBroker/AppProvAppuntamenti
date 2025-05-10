@@ -122,7 +122,7 @@
       const container = document.getElementById('listaRichieste');
       container.innerHTML = '';
 
-      dati.forEach(r => {
+      dati.forEach((r, index) => {
         if (
           (!regione || r.Regione === regione) &&
           (!citta || r['Città'] === citta) &&
@@ -144,14 +144,15 @@
                 <p class="card-text">${r.Descrizione || ''}</p>
                 <p><strong>Regione:</strong> ${r.Regione} | <strong>Città:</strong> ${r['Città']}</p>
                 <p><strong>Categoria:</strong> ${r.Categoria} | <strong>Budget:</strong> €${r['Budget (€)']} | <strong>Prezzo Acquisto:</strong> €${prezzo}</p>
-                <button class="btn btn-primary btn-acquista" ${disabled} onclick='acquistaCliente(this, ${JSON.stringify(r).replace(/'/g, "")}, ${prezzo})'>Acquista Cliente</button>
+                <button class="btn btn-primary btn-acquista" ${disabled} onclick='acquistaCliente(this, ${index}, ${prezzo})'>Acquisisci Cliente</button>
               </div>
             </div>`;
         }
       });
     }
 
-    function acquistaCliente(btn, r, prezzo) {
+    function acquistaCliente(btn, index, prezzo) {
+      const r = datiGlobali[index];
       if (crediti >= prezzo) {
         crediti -= prezzo;
         carrello.push({ titolo: r.Titolo || (r.Categoria + ' - ' + r['Città']), prezzo });
