@@ -9,7 +9,7 @@
     body { background: #f4f6f8; }
     .card { margin-bottom: 20px; }
     .badge-lead { background-color: #0d6efd; }
-    .badge-appuntamento { background-color: #ffc107; }
+    .badge-appuntamento { background-color: #ffc107; color: #000; }
     .badge-contratto { background-color: #198754; }
     #creditiBox { font-weight: bold; font-size: 18px; }
   </style>
@@ -50,7 +50,7 @@
   </div>
 
   <script>
-    const SHEET_URL = 'https://opensheet.elk.sh/1LDqVPZ2q2fZSh8Ewwji2vTIp8eD1v4kbEgWGrDqDesk/1';
+    const SHEET_URL = 'https://opensheet.elk.sh/1y3Ty7QvKooemux41PZqGXvvP0qkwDpiTz1ZpsSLxMBQ/1';
 
     let crediti = parseInt(localStorage.getItem('crediti')) || 10;
     document.getElementById('crediti').innerText = crediti;
@@ -65,7 +65,6 @@
 
     function popolaFiltri(dati) {
       const unici = (chiave) => [...new Set(dati.map(r => r[chiave]).filter(Boolean))].sort();
-
       popolaSelect('filtroRegione', unici('Regione'));
       popolaSelect('filtroCitta', unici('Città'));
       popolaSelect('filtroCategoria', unici('Categoria'));
@@ -76,6 +75,13 @@
       const select = document.getElementById(id);
       const valoreSelezionato = select.value;
       select.innerHTML = `<option value="">Tutti</option>` + valori.map(v => `<option ${v === valoreSelezionato ? 'selected' : ''}>${v}</option>`).join('');
+    }
+
+    function calcolaPrezzo(tipo, budget) {
+      if (tipo.includes('Lead')) return 40;
+      if (tipo.includes('Appuntamento')) return 80;
+      if (tipo.includes('Contratto')) return Math.round((parseInt(budget) || 0) * 0.1);
+      return '';
     }
 
     function mostraRichieste(dati) {
@@ -95,6 +101,7 @@
           (!tipo || r.Tipo === tipo)
         ) {
           const badgeClass = r.Tipo.includes("Lead") ? 'badge-lead' : r.Tipo.includes("Appuntamento") ? 'badge-appuntamento' : 'badge-contratto';
+          const prezzo = calcolaPrezzo(r.Tipo, r['Budget (€)']);
           const disabled = crediti <= 0 ? 'disabled' : '';
 
           container.innerHTML += `
@@ -104,6 +111,7 @@
                 <p class="card-text">${r.Descrizione}</p>
                 <p class="mb-1"><strong>Regione:</strong> ${r.Regione} | <strong>Città:</strong> ${r.Città}</p>
                 <p class="mb-1"><strong>Categoria:</strong> ${r.Categoria} | <strong>Budget:</strong> €${r['Budget (€)']}</p>
+                <p class="mb-2"><strong>Prezzo Acquisto:</strong> €${prezzo}</p>
                 <button class="btn btn-primary" ${disabled} onclick="acquistaCliente(this)">Acquista Cliente</button>
               </div>
             </div>`;
