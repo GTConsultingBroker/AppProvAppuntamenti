@@ -97,7 +97,7 @@
     }
 
     function rimuoviDalCarrello(index, tipo, creditiDaRestituire) {
-      if (tipo === "Lead" || tipo === "Appuntamento") {
+      if (tipo.includes("Lead") || tipo.includes("Appuntamento")) {
         crediti += creditiDaRestituire;
         aggiornaCrediti();
       }
@@ -108,8 +108,8 @@
     }
 
     function acquisisciCliente(btn, titolo, tipo, prezzoTotale, creditiRichiesti) {
-      if (tipo === "Contratto" || crediti >= creditiRichiesti) {
-        if (tipo === "Lead" || tipo === "Appuntamento") {
+      if (tipo.includes("Contratto") || crediti >= creditiRichiesti) {
+        if (tipo.includes("Lead") || tipo.includes("Appuntamento")) {
           crediti -= creditiRichiesti;
           aggiornaCrediti();
         }
@@ -171,18 +171,18 @@
 
         let prezzo = 0;
         let creditiNecessari = 0;
-        if (r.Tipo === "Lead") {
+        if (r.Tipo.includes("Lead")) {
           prezzo = CREDIT_VALUE;
           creditiNecessari = 1;
-        } else if (r.Tipo === "Appuntamento") {
+        } else if (r.Tipo.includes("Appuntamento")) {
           prezzo = CREDIT_VALUE * 2;
           creditiNecessari = 2;
-        } else if (r.Tipo === "Contratto") {
+        } else if (r.Tipo.includes("Contratto")) {
           prezzo = Math.round(parseFloat(r["Budget (€)"]) * 0.10);
           creditiNecessari = 0;
         }
 
-        const badge = r.Tipo === "Lead" ? 'badge-lead' : r.Tipo === "Appuntamento" ? 'badge-appuntamento' : 'badge-contratto';
+        const badge = r.Tipo.includes("Lead") ? 'badge-lead' : r.Tipo.includes("Appuntamento") ? 'badge-appuntamento' : 'badge-contratto';
         const disabled = (r.Tipo !== "Contratto" && crediti < creditiNecessari) ? 'disabled' : '';
         const titolo = r.Categoria + ' - ' + r["Città"];
 
