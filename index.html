@@ -11,11 +11,15 @@
     .badge-lead { background-color: #0d6efd; }
     .badge-appuntamento { background-color: #ffc107; }
     .badge-contratto { background-color: #198754; }
+    #creditiBox { font-weight: bold; font-size: 18px; }
   </style>
 </head>
 <body>
   <div class="container py-4">
-    <h2 class="mb-4 text-center">TrovaClienti</h2>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="mb-0">TrovaClienti</h2>
+      <div id="creditiBox">Crediti: <span id="crediti">10</span></div>
+    </div>
 
     <!-- FILTRI -->
     <div class="row mb-4">
@@ -38,8 +42,10 @@
   </div>
 
   <script>
-    // Google Sheets JSON endpoint (via Apps Script o altro)
     const SHEET_URL = 'https://opensheet.elk.sh/1LDqVPZ2q2fZSh8Ewwji2vTIp8eD1v4kbEgWGrDqDesk/1';
+
+    let crediti = parseInt(localStorage.getItem('crediti')) || 10;
+    document.getElementById('crediti').innerText = crediti;
 
     async function caricaDati() {
       const res = await fetch(SHEET_URL);
@@ -53,7 +59,7 @@
       const container = document.getElementById('listaRichieste');
       container.innerHTML = '';
 
-      dati.forEach(r => {
+      dati.forEach((r, index) => {
         if (
           (!regione || r.Regione.toLowerCase().includes(regione)) &&
           (!citta || r.Città.toLowerCase().includes(citta)) &&
@@ -61,6 +67,8 @@
           (!tipo || r.Tipo.toLowerCase().includes(tipo))
         ) {
           const badgeClass = r.Tipo.includes("Lead") ? 'badge-lead' : r.Tipo.includes("Appuntamento") ? 'badge-appuntamento' : 'badge-contratto';
+          const disabled = crediti <= 0 ? 'disabled' : '';
+
           container.innerHTML += `
             <div class="card shadow-sm">
               <div class="card-body">
@@ -68,11 +76,23 @@
                 <p class="card-text">${r.Descrizione}</p>
                 <p class="mb-1"><strong>Regione:</strong> ${r.Regione} | <strong>Città:</strong> ${r.Città}</p>
                 <p class="mb-1"><strong>Categoria:</strong> ${r.Categoria} | <strong>Budget:</strong> €${r['Budget (€)']}</p>
-                <button class="btn btn-primary">Acquista Cliente</button>
+                <button class="btn btn-primary" ${disabled} onclick="acquistaCliente(this)">Acquista Cliente</button>
               </div>
             </div>`;
         }
       });
+    }
+
+    function acquistaCliente(btn) {
+      if (crediti > 0) {
+        crediti--;
+        localStorage.setItem('crediti', crediti);
+        document.getElementById('crediti').innerText = crediti;
+        if (crediti <= 0) document.querySelectorAll('button').forEach(b => b.disabled = true);
+        btn.classList.add('btn-success');
+        btn.innerText = 'Acquistato';
+        btn.disabled = true;
+      }
     }
 
     document.querySelectorAll('input').forEach(i => i.addEventListener('input', caricaDati));
