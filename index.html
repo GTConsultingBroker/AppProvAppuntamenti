@@ -95,6 +95,7 @@
       const tipo = document.getElementById('filtroTipo').value;
       const container = document.getElementById('listaRichieste');
       container.innerHTML = '';
+
       dati.forEach((r, index) => {
         if (
           (!regione || r.Regione === regione) &&
@@ -103,19 +104,28 @@
           (!tipo || r.Tipo === tipo)
         ) {
           let prezzo = 0;
+          const budget = parseFloat(r['Budget (€)']) || 0;
+
           if (r.Tipo.includes('Lead')) prezzo = 40;
           else if (r.Tipo.includes('Appuntamento')) prezzo = 80;
-          else if (r.Tipo.includes('Contratto')) prezzo = Math.round(parseFloat(r['Budget (€)']) * 0.1);
-          const badgeClass = r.Tipo.includes("Lead") ? 'badge-lead' : r.Tipo.includes("Appuntamento") ? 'badge-appuntamento' : 'badge-contratto';
+          else if (r.Tipo.includes('Contratto')) prezzo = Math.round(budget * 0.1);
+
+          if (prezzo <= 0) return;
+
+          const badgeClass = r.Tipo.includes("Lead") ? 'badge-lead' :
+                             r.Tipo.includes("Appuntamento") ? 'badge-appuntamento' :
+                             'badge-contratto';
+
           const disabled = crediti < prezzo ? 'disabled' : '';
           const titolo = (r.Titolo || r.Categoria || 'Categoria') + ' - ' + (r['Città'] || 'Città');
+
           container.innerHTML += `
             <div class="card shadow-sm">
               <div class="card-body">
                 <h5 class="card-title">${titolo} <span class="badge ${badgeClass}">${r.Tipo}</span></h5>
                 <p class="card-text">${r.Descrizione || ''}</p>
                 <p><strong>Regione:</strong> ${r.Regione} | <strong>Città:</strong> ${r['Città']}</p>
-                <p><strong>Categoria:</strong> ${r.Categoria} | <strong>Budget:</strong> €${r['Budget (€)']} | <strong>Prezzo Acquisto:</strong> €${prezzo}</p>
+                <p><strong>Categoria:</strong> ${r.Categoria} | <strong>Budget:</strong> €${budget} | <strong>Prezzo Acquisto:</strong> €${prezzo}</p>
                 <button class="btn btn-primary btn-acquista" ${disabled} onclick="acquisisciCliente(this, '${titolo}', ${prezzo})">Acquisisci Cliente</button>
               </div>
             </div>`;
