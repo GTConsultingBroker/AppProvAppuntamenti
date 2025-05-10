@@ -24,16 +24,24 @@
     <!-- FILTRI -->
     <div class="row mb-4">
       <div class="col-md-3 mb-2">
-        <input type="text" id="filtroRegione" class="form-control" placeholder="Filtra per Regione">
+        <select id="filtroRegione" class="form-select">
+          <option value="">Tutte le Regioni</option>
+        </select>
       </div>
       <div class="col-md-3 mb-2">
-        <input type="text" id="filtroCitta" class="form-control" placeholder="Filtra per Città">
+        <select id="filtroCitta" class="form-select">
+          <option value="">Tutte le Città</option>
+        </select>
       </div>
       <div class="col-md-3 mb-2">
-        <input type="text" id="filtroCategoria" class="form-control" placeholder="Filtra per Categoria">
+        <select id="filtroCategoria" class="form-select">
+          <option value="">Tutte le Categorie</option>
+        </select>
       </div>
       <div class="col-md-3 mb-2">
-        <input type="text" id="filtroTipo" class="form-control" placeholder="Filtra per Tipo">
+        <select id="filtroTipo" class="form-select">
+          <option value="">Tutti i Tipi</option>
+        </select>
       </div>
     </div>
 
@@ -51,20 +59,40 @@
       const res = await fetch(SHEET_URL);
       const dati = await res.json();
 
-      const regione = document.getElementById('filtroRegione').value.toLowerCase();
-      const citta = document.getElementById('filtroCitta').value.toLowerCase();
-      const categoria = document.getElementById('filtroCategoria').value.toLowerCase();
-      const tipo = document.getElementById('filtroTipo').value.toLowerCase();
+      popolaFiltri(dati);
+      mostraRichieste(dati);
+    }
+
+    function popolaFiltri(dati) {
+      const unici = (chiave) => [...new Set(dati.map(r => r[chiave]).filter(Boolean))].sort();
+
+      popolaSelect('filtroRegione', unici('Regione'));
+      popolaSelect('filtroCitta', unici('Città'));
+      popolaSelect('filtroCategoria', unici('Categoria'));
+      popolaSelect('filtroTipo', unici('Tipo'));
+    }
+
+    function popolaSelect(id, valori) {
+      const select = document.getElementById(id);
+      const valoreSelezionato = select.value;
+      select.innerHTML = `<option value="">Tutti</option>` + valori.map(v => `<option ${v === valoreSelezionato ? 'selected' : ''}>${v}</option>`).join('');
+    }
+
+    function mostraRichieste(dati) {
+      const regione = document.getElementById('filtroRegione').value;
+      const citta = document.getElementById('filtroCitta').value;
+      const categoria = document.getElementById('filtroCategoria').value;
+      const tipo = document.getElementById('filtroTipo').value;
 
       const container = document.getElementById('listaRichieste');
       container.innerHTML = '';
 
-      dati.forEach((r, index) => {
+      dati.forEach((r) => {
         if (
-          (!regione || r.Regione.toLowerCase().includes(regione)) &&
-          (!citta || r.Città.toLowerCase().includes(citta)) &&
-          (!categoria || r.Categoria.toLowerCase().includes(categoria)) &&
-          (!tipo || r.Tipo.toLowerCase().includes(tipo))
+          (!regione || r.Regione === regione) &&
+          (!citta || r.Città === citta) &&
+          (!categoria || r.Categoria === categoria) &&
+          (!tipo || r.Tipo === tipo)
         ) {
           const badgeClass = r.Tipo.includes("Lead") ? 'badge-lead' : r.Tipo.includes("Appuntamento") ? 'badge-appuntamento' : 'badge-contratto';
           const disabled = crediti <= 0 ? 'disabled' : '';
@@ -95,7 +123,7 @@
       }
     }
 
-    document.querySelectorAll('input').forEach(i => i.addEventListener('input', caricaDati));
+    document.querySelectorAll('select').forEach(i => i.addEventListener('change', caricaDati));
     window.onload = caricaDati;
   </script>
 </body>
