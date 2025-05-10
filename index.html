@@ -13,16 +13,6 @@
     .badge-contratto { background-color: #198754; }
     #creditiBox { font-weight: bold; font-size: 18px; }
   </style>
-  <script>
-    // Anti-cache fix for GitHub Pages
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        for (let registration of registrations) {
-          registration.unregister();
-        }
-      });
-    }
-  </script>
 </head>
 <body>
   <div class="container py-4">
@@ -60,26 +50,33 @@
   </div>
 
   <script>
-    const SHEET_URL = 'https://opensheet.elk.sh/1y3Ty7QvKooemux41PZqGXvvP0qkwDpiTz1ZpsSLxMBQ/1';
+    const SHEET_URL = 'https://opensheet.elk.sh/1y3Ty7QvKooemux41PZqGXvvP0qkwDpiTz1ZpsSLxMBQ/Dati';
 
     let crediti = parseInt(localStorage.getItem('crediti')) || 10;
     document.getElementById('crediti').innerText = crediti;
+    let datiGlobali = [];
 
     async function caricaDati() {
       const res = await fetch(SHEET_URL);
       const dati = await res.json();
-
+      datiGlobali = dati;
       popolaFiltri(dati);
       mostraRichieste(dati);
     }
 
     function popolaFiltri(dati) {
       const unici = (chiave) => [...new Set(dati.map(r => r[chiave]).filter(Boolean))].sort();
-
       popolaSelect('filtroRegione', unici('Regione'));
-      popolaSelect('filtroCitta', unici('Città'));
       popolaSelect('filtroCategoria', unici('Categoria'));
       popolaSelect('filtroTipo', unici('Tipo'));
+      aggiornaCitta();
+    }
+
+    function aggiornaCitta() {
+      const regione = document.getElementById('filtroRegione').value;
+      const sottoinsieme = regione ? datiGlobali.filter(r => r.Regione === regione) : datiGlobali;
+      const unici = [...new Set(sottoinsieme.map(r => r['Città']).filter(Boolean))].sort();
+      popolaSelect('filtroCitta', unici);
     }
 
     function popolaSelect(id, valori) {
@@ -100,7 +97,7 @@
       dati.forEach((r) => {
         if (
           (!regione || r.Regione === regione) &&
-          (!citta || r.Città === citta) &&
+          (!citta || r['Città'] === citta) &&
           (!categoria || r.Categoria === categoria) &&
           (!tipo || r.Tipo === tipo)
         ) {
@@ -109,7 +106,7 @@
           let prezzo = 0;
           if (r.Tipo.includes("Lead")) prezzo = 40;
           else if (r.Tipo.includes("Appuntamento")) prezzo = 80;
-          else if (r.Tipo.includes("Contratto")) prezzo = (parseFloat(r['Budget (€)']) * 0.1).toFixed(2);
+          else if (r.Tipo.includes("Contratto")) prezzo = parseInt(r['Budget (€)']) * 0.1;
 
           const disabled = crediti < prezzo ? 'disabled' : '';
 
@@ -118,10 +115,9 @@
               <div class="card-body">
                 <h5 class="card-title">${r.Titolo} <span class="badge ${badgeClass}">${r.Tipo}</span></h5>
                 <p class="card-text">${r.Descrizione}</p>
-                <p class="mb-1"><strong>Regione:</strong> ${r.Regione} | <strong>Città:</strong> ${r.Città}</p>
-                <p class="mb-1"><strong>Categoria:</strong> ${r.Categoria} | <strong>Budget:</strong> €${r['Budget (€)']}</p>
-                <p class="mb-1"><strong>Prezzo Acquisto:</strong> €${prezzo}</p>
-                <button class="btn btn-primary" ${disabled} onclick="acquistaCliente(this, ${prezzo})">Acquista Cliente</button>
+                <p class="mb-1"><strong>Regione:</strong> ${r.Regione} | <strong>Città:</strong> ${r['Città']}</p>
+                <p class="mb-1"><strong>Categoria:</strong> ${r.Categoria} | <strong>Budget:</strong> €${r['Budget (€)']} | <strong>Prezzo Acquisto:</strong> €${Math.round(prezzo)}</p>
+                <button class="btn btn-primary" ${disabled} onclick="acquistaCliente(this, ${Math.round(prezzo)})">Acquista Cliente</button>
               </div>
             </div>`;
         }
@@ -140,7 +136,13 @@
       }
     }
 
-    document.querySelectorAll('select').forEach(i => i.addEventListener('change', caricaDati));
+    document.getElementById('filtroRegione').addEventListener('change', () => {
+      aggiornaCitta();
+      mostraRichieste(datiGlobali);
+    });
+
+    document.querySelectorAll('select').forEach(i => i.id !== 'filtroRegione' && i.addEventListener('change', () => mostraRichieste(datiGlobali)));
+
     window.onload = caricaDati;
   </script>
 </body>
