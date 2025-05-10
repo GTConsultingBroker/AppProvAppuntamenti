@@ -23,7 +23,6 @@
       <h2 class="mb-0">TrovaClienti</h2>
       <div id="creditiBox">Crediti: <span id="crediti">10</span></div>
     </div>
-
     <div class="row mb-4">
       <div class="col-md-3 mb-2">
         <select id="filtroRegione" class="form-select"><option value="">Tutte le Regioni</option></select>
@@ -38,17 +37,14 @@
         <select id="filtroTipo" class="form-select"><option value="">Tutti i Tipi</option></select>
       </div>
     </div>
-
     <div id="listaRichieste"></div>
-
     <div id="carrello" class="mt-5">
       <h5>Carrello Acquisti</h5>
       <div id="listaCarrello"></div>
     </div>
   </div>
-
   <script>
-    const SHEET_URL = 'https://opensheet.elk.sh/1dg8Gs_1a-uXU5b5yWSJTj6EFgB15-ropfQm1NVXQVFY/1';
+    const SHEET_URL = 'https://opensheet.vercel.app/1dg8Gs_1a-uXU5b5yWSJTj6EFgB15-ropfQm1NVXQVFY/1';
     let crediti = parseInt(localStorage.getItem('crediti')) || 10;
     document.getElementById('crediti').innerText = crediti;
     let datiGlobali = [];
@@ -99,7 +95,6 @@
       const tipo = document.getElementById('filtroTipo').value;
       const container = document.getElementById('listaRichieste');
       container.innerHTML = '';
-
       dati.forEach((r, index) => {
         if (
           (!regione || r.Regione === regione) &&
@@ -111,29 +106,27 @@
           if (r.Tipo.includes('Lead')) prezzo = 40;
           else if (r.Tipo.includes('Appuntamento')) prezzo = 80;
           else if (r.Tipo.includes('Contratto')) prezzo = Math.round(parseFloat(r['Budget (€)']) * 0.1);
-
           const badgeClass = r.Tipo.includes("Lead") ? 'badge-lead' : r.Tipo.includes("Appuntamento") ? 'badge-appuntamento' : 'badge-contratto';
           const disabled = crediti < prezzo ? 'disabled' : '';
-
+          const titolo = (r.Titolo || r.Categoria || 'Categoria') + ' - ' + (r['Città'] || 'Città');
           container.innerHTML += `
             <div class="card shadow-sm">
               <div class="card-body">
-                <h5 class="card-title">${r.Titolo || (r.Categoria + ' - ' + r['Città'])} <span class="badge ${badgeClass}">${r.Tipo}</span></h5>
+                <h5 class="card-title">${titolo} <span class="badge ${badgeClass}">${r.Tipo}</span></h5>
                 <p class="card-text">${r.Descrizione || ''}</p>
                 <p><strong>Regione:</strong> ${r.Regione} | <strong>Città:</strong> ${r['Città']}</p>
                 <p><strong>Categoria:</strong> ${r.Categoria} | <strong>Budget:</strong> €${r['Budget (€)']} | <strong>Prezzo Acquisto:</strong> €${prezzo}</p>
-                <button class="btn btn-primary btn-acquista" ${disabled} onclick="acquisisciCliente(this, ${index}, ${prezzo})">Acquisisci Cliente</button>
+                <button class="btn btn-primary btn-acquista" ${disabled} onclick="acquisisciCliente(this, '${titolo}', ${prezzo})">Acquisisci Cliente</button>
               </div>
             </div>`;
         }
       });
     }
 
-    function acquisisciCliente(btn, index, prezzo) {
-      const r = datiGlobali[index];
+    function acquisisciCliente(btn, titolo, prezzo) {
       if (crediti >= prezzo) {
         crediti -= prezzo;
-        carrello.push({ titolo: r.Titolo || (r.Categoria + ' - ' + r['Città']), prezzo });
+        carrello.push({ titolo, prezzo });
         aggiornaCrediti();
         aggiornaCarrello();
         btn.classList.remove('btn-primary');
@@ -141,6 +134,8 @@
         btn.innerText = 'Acquistato';
         btn.disabled = true;
         alert('Cliente acquisito!');
+      } else {
+        alert('Crediti insufficienti.');
       }
     }
 
