@@ -1,19 +1,20 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TrovaClienti</title>
+  <title>Trova Clienti App - FIXED</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <style>
-    body { background: #f4f6f8; font-family: 'Segoe UI', sans-serif; }
-    .card { margin-bottom: 20px; border-left: 4px solid #dee2e6; }
+    body { background: #f8f9fa; font-family: Arial, sans-serif; }
+    .card { margin-bottom: 20px; }
     .badge-lead { background-color: #28a745; }
     .badge-appuntamento { background-color: #ff8c00; }
-    .badge-contratto { background-color: #ffe066; color: #000; }
-    #creditiBox { font-weight: bold; font-size: 18px; }
-    .btn-acquista { margin-top: 10px; }
-    #carrello { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-top: 30px; }
+    .badge-contratto { background-color: #ffe066; color: black; }
+    .carrello-icon { position: fixed; top: 15px; right: 20px; z-index: 1000; }
+    .carrello-panel { display: none; position: fixed; right: 20px; top: 60px; width: 300px; background: white; border: 1px solid #ddd; border-radius: 8px; padding: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .carrello-panel h5 { margin-top: 0; }
     .carrello-voce { display: flex; justify-content: space-between; margin-bottom: 8px; }
   </style>
 </head>
@@ -21,140 +22,121 @@
   <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2 class="mb-0">TrovaClienti</h2>
-      <div id="creditiBox">Crediti: <span id="crediti">10</span></div>
+      <div><strong>Crediti:</strong> <span id="crediti">10</span></div>
     </div>
 
-    <div class="row mb-4">
-      <div class="col-md-3 mb-2">
-        <select id="filtroRegione" class="form-select"><option value="">Tutte le Regioni</option></select>
-      </div>
-      <div class="col-md-3 mb-2">
-        <select id="filtroCitta" class="form-select"><option value="">Tutte le Città</option></select>
-      </div>
-      <div class="col-md-3 mb-2">
-        <select id="filtroCategoria" class="form-select"><option value="">Tutte le Categorie</option></select>
-      </div>
-      <div class="col-md-3 mb-2">
-        <select id="filtroTipo" class="form-select"><option value="">Tutti i Tipi</option></select>
-      </div>
+    <div class="row mb-3">
+      <div class="col"><select id="filtroRegione" class="form-select"><option value="">Tutte le Regioni</option></select></div>
+      <div class="col"><select id="filtroCitta" class="form-select"><option value="">Tutte le Città</option></select></div>
+      <div class="col"><select id="filtroCategoria" class="form-select"><option value="">Tutte le Categorie</option></select></div>
+      <div class="col"><select id="filtroTipo" class="form-select"><option value="">Tutti i Tipi</option></select></div>
     </div>
 
     <div id="listaRichieste"></div>
+  </div>
 
-    <div id="carrello" class="mt-5">
-      <h5>Carrello Acquisti</h5>
-      <div id="listaCarrello"></div>
-    </div>
+  <div class="carrello-icon">
+    <button class="btn btn-dark" onclick="toggleCarrello()">🛒 Carrello</button>
+  </div>
+  <div id="carrelloPanel" class="carrello-panel">
+    <h5>Carrello</h5>
+    <div id="listaCarrello"></div>
   </div>
 
   <script>
-    const SHEET_URL = 'https://opensheet.elk.sh/1dg8Gs_1a-uXU5b5yWSJTj6EFgB15-ropfQm1NVXQVFY/1';
+    const SHEET_URL = 'https://opensheet.vercel.app/1dg8Gs_1a-uXU5b5yWSJTj6EFgB15-ropfQm1NVXQVFY/1';
     let crediti = parseInt(localStorage.getItem('crediti')) || 10;
-    document.getElementById('crediti').innerText = crediti;
     let datiGlobali = [];
     let carrello = JSON.parse(localStorage.getItem('carrello')) || [];
+    document.getElementById("crediti").innerText = crediti;
 
     function aggiornaCrediti() {
-      document.getElementById('crediti').innerText = crediti;
-      localStorage.setItem('crediti', crediti);
+      document.getElementById("crediti").innerText = crediti;
+      localStorage.setItem("crediti", crediti);
     }
 
     function aggiornaCarrello() {
-      const contenitore = document.getElementById('listaCarrello');
-      contenitore.innerHTML = '';
+      const div = document.getElementById("listaCarrello");
+      div.innerHTML = "";
       carrello.forEach((item, i) => {
-        contenitore.innerHTML += `
-          <div class="carrello-voce">
-            <span>${item.titolo} - €${item.prezzo}</span>
-            <button class="btn btn-sm btn-danger" onclick="rimuoviDalCarrello(${i}, ${item.prezzo})">Rimuovi</button>
-          </div>`;
+        div.innerHTML += '<div class="carrello-voce"><span>' + item + '</span><button class="btn btn-sm btn-danger" onclick="rimuovi(' + i + ')">Rimuovi</button></div>';
       });
-      localStorage.setItem('carrello', JSON.stringify(carrello));
+      localStorage.setItem("carrello", JSON.stringify(carrello));
     }
 
-    function rimuoviDalCarrello(index, prezzo) {
-      crediti += prezzo;
+    function rimuovi(index) {
       carrello.splice(index, 1);
+      crediti += 1;
       aggiornaCarrello();
       aggiornaCrediti();
     }
 
-    function popolaSelect(id, valori) {
-      const select = document.getElementById(id);
-      select.innerHTML = `<option value="">Tutti</option>` + valori.map(v => `<option>${v}</option>`).join('');
+    function toggleCarrello() {
+      const pannello = document.getElementById("carrelloPanel");
+      pannello.style.display = pannello.style.display === "block" ? "none" : "block";
     }
 
     function popolaFiltri(dati) {
-      const unici = chiave => [...new Set(dati.map(r => r[chiave]).filter(Boolean))].sort();
-      popolaSelect('filtroRegione', unici('Regione'));
-      popolaSelect('filtroCitta', unici('Città'));
-      popolaSelect('filtroCategoria', unici('Categoria'));
-      popolaSelect('filtroTipo', unici('Tipo'));
+      const setUnici = (chiave) => [...new Set(dati.map(r => r[chiave]).filter(Boolean))].sort();
+      const opzioni = (arr) => arr.map(v => `<option>${v}</option>`).join('');
+      document.getElementById("filtroRegione").innerHTML += opzioni(setUnici("Regione"));
+      document.getElementById("filtroCitta").innerHTML += opzioni(setUnici("Città"));
+      document.getElementById("filtroCategoria").innerHTML += opzioni(setUnici("Categoria"));
+      document.getElementById("filtroTipo").innerHTML += opzioni(setUnici("Tipo"));
     }
 
     function mostraRichieste(dati) {
-      const regione = document.getElementById('filtroRegione').value;
-      const citta = document.getElementById('filtroCitta').value;
-      const categoria = document.getElementById('filtroCategoria').value;
-      const tipo = document.getElementById('filtroTipo').value;
-      const container = document.getElementById('listaRichieste');
-      container.innerHTML = '';
+      const fRegione = document.getElementById("filtroRegione").value;
+      const fCitta = document.getElementById("filtroCitta").value;
+      const fCategoria = document.getElementById("filtroCategoria").value;
+      const fTipo = document.getElementById("filtroTipo").value;
+      const container = document.getElementById("listaRichieste");
+      container.innerHTML = "";
 
-      dati.forEach((r, index) => {
+      dati.forEach((r, i) => {
         if (
-          (!regione || r.Regione === regione) &&
-          (!citta || r['Città'] === citta) &&
-          (!categoria || r.Categoria === categoria) &&
-          (!tipo || r.Tipo === tipo)
+          (!fRegione || r.Regione === fRegione) &&
+          (!fCitta || r["Città"] === fCitta) &&
+          (!fCategoria || r.Categoria === fCategoria) &&
+          (!fTipo || r.Tipo === fTipo)
         ) {
-          let prezzo = 0;
-          if (r.Tipo.includes('Lead')) prezzo = 40;
-          else if (r.Tipo.includes('Appuntamento')) prezzo = 80;
-          else if (r.Tipo.includes('Contratto')) prezzo = Math.round(parseFloat(r['Budget (€)']) * 0.1);
-
-          const badgeClass = r.Tipo.includes("Lead") ? 'badge-lead' : r.Tipo.includes("Appuntamento") ? 'badge-appuntamento' : 'badge-contratto';
-          const disabled = crediti < prezzo ? 'disabled' : '';
-
+          const tipo = r.Tipo;
+          const badge = tipo.includes("Lead") ? "badge-lead" : tipo.includes("Appuntamento") ? "badge-appuntamento" : "badge-contratto";
           container.innerHTML += `
-            <div class="card shadow-sm">
+            <div class="card">
               <div class="card-body">
-                <h5 class="card-title">${r.Titolo || (r.Categoria + ' - ' + r['Città'])} <span class="badge ${badgeClass}">${r.Tipo}</span></h5>
-                <p class="card-text">${r.Descrizione || ''}</p>
-                <p><strong>Regione:</strong> ${r.Regione} | <strong>Città:</strong> ${r['Città']}</p>
-                <p><strong>Categoria:</strong> ${r.Categoria} | <strong>Budget:</strong> €${r['Budget (€)']} | <strong>Prezzo Acquisto:</strong> €${prezzo}</p>
-                <button class="btn btn-primary btn-acquista" ${disabled} onclick="acquistaCliente(this, ${index}, ${prezzo})">Acquisisci Cliente</button>
+                <h5 class="card-title">${r.Categoria} - ${r["Città"]} <span class="badge ${badge}">${r.Tipo}</span></h5>
+                <p class="card-text">Regione: ${r.Regione} | Budget: €${r["Budget (€)"]}</p>
+                <button class="btn btn-primary" onclick="acquista('${r.Categoria} - ${r['Città']}')">Acquisisci Cliente</button>
               </div>
             </div>`;
         }
       });
     }
 
-    function acquistaCliente(btn, index, prezzo) {
-      const r = datiGlobali[index];
-      if (crediti >= prezzo) {
-        crediti -= prezzo;
-        carrello.push({ titolo: r.Titolo || (r.Categoria + ' - ' + r['Città']), prezzo });
+    function acquista(titolo) {
+      if (crediti > 0) {
+        crediti--;
+        carrello.push(titolo);
         aggiornaCrediti();
         aggiornaCarrello();
-        btn.classList.remove('btn-primary');
-        btn.classList.add('btn-success');
-        btn.innerText = 'Acquistato';
-        btn.disabled = true;
-        btn.removeAttribute("onclick");
+        alert("Cliente acquisito!");
+      } else {
+        alert("Crediti insufficienti.");
       }
     }
 
-    async function caricaDati() {
+    async function carica() {
       const res = await fetch(SHEET_URL);
       const dati = await res.json();
       datiGlobali = dati;
       popolaFiltri(dati);
       mostraRichieste(dati);
       aggiornaCarrello();
-      document.querySelectorAll('select').forEach(i => i.addEventListener('change', () => mostraRichieste(datiGlobali)));
     }
 
-    window.onload = caricaDati;
+    document.querySelectorAll("select").forEach(s => s.addEventListener("change", () => mostraRichieste(datiGlobali)));
+    window.onload = carica;
   </script>
 </body>
 </html>
