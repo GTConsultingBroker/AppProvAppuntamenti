@@ -167,7 +167,12 @@
       const box = document.getElementById('listaRichieste');
       box.innerHTML = '';
       dati.forEach(r => {
-        if ((reg && r.Regione !== reg) || (cit && r["Città"] !== cit) || (cat && r.Categoria !== cat) || (tipoFiltro && r.Tipo !== tipoFiltro)) return;
+        
+    if ((reg && r.Regione !== reg) ||
+        (cit && r["Città"] !== cit) ||
+        (cat && r.Categoria !== cat) ||
+        (tipoFiltro && !r.Tipo.includes(tipoFiltro))) return;
+    
 
         let prezzo = 0;
         let creditiNecessari = 0;
