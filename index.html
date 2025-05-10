@@ -3,199 +3,202 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TrovaClienti - Neon Edition</title>
+  <title>TrovaClienti</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <style>
     body {
-      background: #121212;
-      color: #f0f0f0;
+      background: #ffffff;
+      color: #000;
       font-family: 'Segoe UI', sans-serif;
     }
     .card {
-      background: #1e1e1e;
-      border: 1px solid #333;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,255,180,0.1);
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
       margin-bottom: 20px;
-    }
-    .card-title {
-      font-size: 1.25rem;
-    }
-    .badge {
-      font-size: 0.75rem;
-      padding: 0.4em 0.6em;
-    }
-    .badge-lead { background-color: #00c853; }
-    .badge-appuntamento { background-color: #ff9100; }
-    .badge-contratto { background-color: #ffd600; color: #000; }
-    .badge-regione { background-color: #00bcd4; }
-    .badge-categoria { background-color: #ab47bc; }
-    #creditiBox {
-      font-size: 18px;
-      font-weight: bold;
-    }
-    .btn {
-      border-radius: 8px;
-    }
-    .btn-primary {
-      background-color: #2979ff;
-      border-color: #2979ff;
-    }
-    .btn-success {
-      background-color: #00e676;
-      border-color: #00e676;
-    }
-    #carrello {
-      background: #1e1e1e;
-      border: 1px solid #444;
       padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(255,255,255,0.05);
+    }
+    .badge-lead { background-color: #28a745; }
+    .badge-appuntamento { background-color: #ffc107; }
+    .badge-contratto { background-color: #17a2b8; }
+    #creditiBox {
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .btn-acquista { margin-top: 10px; }
+    #carrello {
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 30px;
     }
     .carrello-voce {
       display: flex;
       justify-content: space-between;
-      padding: 6px 0;
-      border-bottom: 1px solid #333;
-    }
-    .progress {
-      background-color: #333;
-      height: 20px;
-      border-radius: 10px;
-    }
-    .progress-bar {
-      background-color: #00e5ff;
-    }
-    .select-filter {
-      background: #1e1e1e;
-      color: #f0f0f0;
-      border: 1px solid #444;
+      margin-bottom: 8px;
     }
   </style>
 </head>
 <body>
   <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h2 class="text-info">🌐 TrovaClienti</h2>
-      <div id="creditiBox">Crediti residui: <span id="crediti">200</span></div>
+      <h2>TrovaClienti</h2>
+      <div id="creditiBox">Crediti residui: <span id="crediti">20</span></div>
     </div>
 
-    <div class="progress mb-3">
-      <div id="creditBar" class="progress-bar" role="progressbar" style="width: 100%"></div>
-    </div>
-
-    <div class="row g-2 mb-4">
-      <div class="col-md-3"><select id="filtroRegione" class="form-select select-filter"><option value="">Tutte le Regioni</option></select></div>
-      <div class="col-md-3"><select id="filtroCitta" class="form-select select-filter"><option value="">Tutte le Città</option></select></div>
-      <div class="col-md-3"><select id="filtroCategoria" class="form-select select-filter"><option value="">Tutte le Categorie</option></select></div>
-      <div class="col-md-3"><select id="filtroTipo" class="form-select select-filter"><option value="">Tutti i Tipi</option></select></div>
-    </div>
-
-    <div id="carrello" class="mb-4">
+    
+    <div id="alertBox" class="alert alert-success d-none" role="alert"></div>
+    <div id="carrello">
+    
       <h5>🛒 Carrello</h5>
       <div id="listaCarrello"></div>
-      <div class="mt-2">Totale crediti: <span id="totaleCrediti">0</span> | Totale €: <span id="totaleEuro">0</span></div>
-      <button class="btn btn-outline-warning btn-sm mt-2" onclick="svuotaCarrello()">Svuota</button>
-      <button class="btn btn-outline-success btn-sm mt-2" onclick="checkout()">Checkout</button>
+      <div><strong>Totale da pagare:</strong> €<span id="totaleEuro">0</span> | <strong>Clienti:</strong> <span id="numeroClienti">0</span></div>
+      <button class="btn btn-sm btn-outline-warning mt-2" onclick="svuotaCarrello()">Svuota Carrello</button>
+      <button class="btn btn-sm btn-outline-success mt-2" onclick="checkout()">Checkout</button>
+    </div>
+
+    <div class="row g-2 mb-3">
+      <div class="col-md-3"><select id="filtroRegione" class="form-select"><option value="">Tutte le Regioni</option></select></div>
+      <div class="col-md-3"><select id="filtroCitta" class="form-select"><option value="">Tutte le Città</option></select></div>
+      <div class="col-md-3"><select id="filtroCategoria" class="form-select"><option value="">Tutte le Categorie</option></select></div>
+      <div class="col-md-3"><select id="filtroTipo" class="form-select"><option value="">Tutti i Tipi</option></select></div>
     </div>
 
     <div id="listaRichieste"></div>
   </div>
 
   <script>
-    const CREDIT_VALUE = 80;
-    let crediti = 200;
+    const CREDIT_VALUE = 40;
+    let crediti = 20;
     let carrello = [];
     const dati = [{"Regione": "Abruzzo", "Citt\u00e0": "L'Aquila", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 11392, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Abruzzo", "Citt\u00e0": "L'Aquila", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 7910, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Abruzzo", "Citt\u00e0": "Pescara", "Categoria": "Infissi e Serramenti", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 14497, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Abruzzo", "Citt\u00e0": "Pescara", "Categoria": "Infissi e Serramenti", "Tipo": "Contratto", "Budget (\u20ac)": 14336, "Prezzo Acquisto (\u20ac)": 1433.6}, {"Regione": "Abruzzo", "Citt\u00e0": "Pescara", "Categoria": "Domotica", "Tipo": "Appuntamento", "Budget (\u20ac)": 6780, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Abruzzo", "Citt\u00e0": "Pescara", "Categoria": "Manutenzione", "Tipo": "Contratto", "Budget (\u20ac)": 4956, "Prezzo Acquisto (\u20ac)": 495.6}, {"Regione": "Abruzzo", "Citt\u00e0": "Chieti", "Categoria": "Infissi e Serramenti", "Tipo": "Contratto", "Budget (\u20ac)": 12047, "Prezzo Acquisto (\u20ac)": 1204.7}, {"Regione": "Abruzzo", "Citt\u00e0": "Chieti", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 7959, "Prezzo Acquisto (\u20ac)": 795.9}, {"Regione": "Abruzzo", "Citt\u00e0": "Teramo", "Categoria": "Ristrutturazione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 13649, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Abruzzo", "Citt\u00e0": "Teramo", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 8457, "Prezzo Acquisto (\u20ac)": 845.7}, {"Regione": "Abruzzo", "Citt\u00e0": "Teramo", "Categoria": "Domotica", "Tipo": "Appuntamento", "Budget (\u20ac)": 3055, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Basilicata", "Citt\u00e0": "Potenza", "Categoria": "Ristrutturazione", "Tipo": "Appuntamento", "Budget (\u20ac)": 3990, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Basilicata", "Citt\u00e0": "Potenza", "Categoria": "Manutenzione", "Tipo": "Appuntamento", "Budget (\u20ac)": 12205, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Basilicata", "Citt\u00e0": "Potenza", "Categoria": "Infissi e Serramenti", "Tipo": "Contratto", "Budget (\u20ac)": 13742, "Prezzo Acquisto (\u20ac)": 1374.2}, {"Regione": "Basilicata", "Citt\u00e0": "Matera", "Categoria": "Domotica", "Tipo": "Appuntamento", "Budget (\u20ac)": 12437, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Basilicata", "Citt\u00e0": "Matera", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 7537, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Basilicata", "Citt\u00e0": "Matera", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 12046, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Basilicata", "Citt\u00e0": "Matera", "Categoria": "Manutenzione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 7850, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Calabria", "Citt\u00e0": "Catanzaro", "Categoria": "Ristrutturazione", "Tipo": "Appuntamento", "Budget (\u20ac)": 6326, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Calabria", "Citt\u00e0": "Catanzaro", "Categoria": "Ristrutturazione", "Tipo": "Appuntamento", "Budget (\u20ac)": 10653, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Calabria", "Citt\u00e0": "Reggio Calabria", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 12692, "Prezzo Acquisto (\u20ac)": 1269.2}, {"Regione": "Calabria", "Citt\u00e0": "Reggio Calabria", "Categoria": "Ristrutturazione", "Tipo": "Appuntamento", "Budget (\u20ac)": 13068, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Calabria", "Citt\u00e0": "Reggio Calabria", "Categoria": "Ristrutturazione", "Tipo": "Appuntamento", "Budget (\u20ac)": 13485, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Calabria", "Citt\u00e0": "Cosenza", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 13183, "Prezzo Acquisto (\u20ac)": 1318.3}, {"Regione": "Calabria", "Citt\u00e0": "Cosenza", "Categoria": "Impianto Fotovoltaico", "Tipo": "Contratto", "Budget (\u20ac)": 13638, "Prezzo Acquisto (\u20ac)": 1363.8}, {"Regione": "Calabria", "Citt\u00e0": "Cosenza", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 3028, "Prezzo Acquisto (\u20ac)": 302.8}, {"Regione": "Calabria", "Citt\u00e0": "Cosenza", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 5612, "Prezzo Acquisto (\u20ac)": 561.2}, {"Regione": "Campania", "Citt\u00e0": "Napoli", "Categoria": "Infissi e Serramenti", "Tipo": "Contratto", "Budget (\u20ac)": 14237, "Prezzo Acquisto (\u20ac)": 1423.7}, {"Regione": "Campania", "Citt\u00e0": "Napoli", "Categoria": "Domotica", "Tipo": "Appuntamento", "Budget (\u20ac)": 1974, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Campania", "Citt\u00e0": "Salerno", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 8083, "Prezzo Acquisto (\u20ac)": 808.3}, {"Regione": "Campania", "Citt\u00e0": "Salerno", "Categoria": "Domotica", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 4875, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Campania", "Citt\u00e0": "Salerno", "Categoria": "Ristrutturazione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 11129, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Campania", "Citt\u00e0": "Caserta", "Categoria": "Infissi e Serramenti", "Tipo": "Contratto", "Budget (\u20ac)": 2318, "Prezzo Acquisto (\u20ac)": 231.8}, {"Regione": "Campania", "Citt\u00e0": "Caserta", "Categoria": "Impianto Fotovoltaico", "Tipo": "Contratto", "Budget (\u20ac)": 13990, "Prezzo Acquisto (\u20ac)": 1399.0}, {"Regione": "Campania", "Citt\u00e0": "Caserta", "Categoria": "Manutenzione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 10821, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Campania", "Citt\u00e0": "Caserta", "Categoria": "Ristrutturazione", "Tipo": "Appuntamento", "Budget (\u20ac)": 11328, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Campania", "Citt\u00e0": "Avellino", "Categoria": "Ristrutturazione", "Tipo": "Contratto", "Budget (\u20ac)": 13217, "Prezzo Acquisto (\u20ac)": 1321.7}, {"Regione": "Campania", "Citt\u00e0": "Avellino", "Categoria": "Impianto Fotovoltaico", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 13657, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Campania", "Citt\u00e0": "Benevento", "Categoria": "Ristrutturazione", "Tipo": "Appuntamento", "Budget (\u20ac)": 8217, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Campania", "Citt\u00e0": "Benevento", "Categoria": "Ristrutturazione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 9115, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Campania", "Citt\u00e0": "Benevento", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 13755, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Campania", "Citt\u00e0": "Benevento", "Categoria": "Manutenzione", "Tipo": "Appuntamento", "Budget (\u20ac)": 14834, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Emilia-Romagna", "Citt\u00e0": "Bologna", "Categoria": "Ristrutturazione", "Tipo": "Contratto", "Budget (\u20ac)": 11910, "Prezzo Acquisto (\u20ac)": 1191.0}, {"Regione": "Emilia-Romagna", "Citt\u00e0": "Bologna", "Categoria": "Ristrutturazione", "Tipo": "Appuntamento", "Budget (\u20ac)": 2956, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Emilia-Romagna", "Citt\u00e0": "Modena", "Categoria": "Impianto Fotovoltaico", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 10933, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Emilia-Romagna", "Citt\u00e0": "Modena", "Categoria": "Manutenzione", "Tipo": "Contratto", "Budget (\u20ac)": 10736, "Prezzo Acquisto (\u20ac)": 1073.6}, {"Regione": "Emilia-Romagna", "Citt\u00e0": "Parma", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 5071, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Emilia-Romagna", "Citt\u00e0": "Parma", "Categoria": "Ristrutturazione", "Tipo": "Contratto", "Budget (\u20ac)": 3947, "Prezzo Acquisto (\u20ac)": 394.7}, {"Regione": "Emilia-Romagna", "Citt\u00e0": "Reggio Emilia", "Categoria": "Infissi e Serramenti", "Tipo": "Contratto", "Budget (\u20ac)": 2143, "Prezzo Acquisto (\u20ac)": 214.3}, {"Regione": "Emilia-Romagna", "Citt\u00e0": "Reggio Emilia", "Categoria": "Ristrutturazione", "Tipo": "Appuntamento", "Budget (\u20ac)": 11662, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Emilia-Romagna", "Citt\u00e0": "Reggio Emilia", "Categoria": "Impianto Fotovoltaico", "Tipo": "Contratto", "Budget (\u20ac)": 5084, "Prezzo Acquisto (\u20ac)": 508.4}, {"Regione": "Emilia-Romagna", "Citt\u00e0": "Reggio Emilia", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 14603, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Emilia-Romagna", "Citt\u00e0": "Ferrara", "Categoria": "Manutenzione", "Tipo": "Contratto", "Budget (\u20ac)": 9746, "Prezzo Acquisto (\u20ac)": 974.6}, {"Regione": "Emilia-Romagna", "Citt\u00e0": "Ferrara", "Categoria": "Manutenzione", "Tipo": "Contratto", "Budget (\u20ac)": 14306, "Prezzo Acquisto (\u20ac)": 1430.6}, {"Regione": "Emilia-Romagna", "Citt\u00e0": "Ferrara", "Categoria": "Domotica", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 10131, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Friuli-Venezia Giulia", "Citt\u00e0": "Trieste", "Categoria": "Ristrutturazione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 7936, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Friuli-Venezia Giulia", "Citt\u00e0": "Trieste", "Categoria": "Manutenzione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 6191, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Friuli-Venezia Giulia", "Citt\u00e0": "Trieste", "Categoria": "Ristrutturazione", "Tipo": "Contratto", "Budget (\u20ac)": 2518, "Prezzo Acquisto (\u20ac)": 251.8}, {"Regione": "Friuli-Venezia Giulia", "Citt\u00e0": "Udine", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 3237, "Prezzo Acquisto (\u20ac)": 323.7}, {"Regione": "Friuli-Venezia Giulia", "Citt\u00e0": "Udine", "Categoria": "Ristrutturazione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 2710, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Friuli-Venezia Giulia", "Citt\u00e0": "Udine", "Categoria": "Manutenzione", "Tipo": "Contratto", "Budget (\u20ac)": 1464, "Prezzo Acquisto (\u20ac)": 146.4}, {"Regione": "Friuli-Venezia Giulia", "Citt\u00e0": "Udine", "Categoria": "Ristrutturazione", "Tipo": "Contratto", "Budget (\u20ac)": 6452, "Prezzo Acquisto (\u20ac)": 645.2}, {"Regione": "Friuli-Venezia Giulia", "Citt\u00e0": "Pordenone", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 12376, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Friuli-Venezia Giulia", "Citt\u00e0": "Pordenone", "Categoria": "Manutenzione", "Tipo": "Contratto", "Budget (\u20ac)": 9832, "Prezzo Acquisto (\u20ac)": 983.2}, {"Regione": "Friuli-Venezia Giulia", "Citt\u00e0": "Pordenone", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 5374, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Lazio", "Citt\u00e0": "Roma", "Categoria": "Domotica", "Tipo": "Appuntamento", "Budget (\u20ac)": 2423, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Lazio", "Citt\u00e0": "Roma", "Categoria": "Manutenzione", "Tipo": "Contratto", "Budget (\u20ac)": 9342, "Prezzo Acquisto (\u20ac)": 934.2}, {"Regione": "Lazio", "Citt\u00e0": "Latina", "Categoria": "Domotica", "Tipo": "Appuntamento", "Budget (\u20ac)": 12149, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Lazio", "Citt\u00e0": "Latina", "Categoria": "Manutenzione", "Tipo": "Appuntamento", "Budget (\u20ac)": 11362, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Lazio", "Citt\u00e0": "Frosinone", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 13781, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Lazio", "Citt\u00e0": "Frosinone", "Categoria": "Manutenzione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 2246, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Lazio", "Citt\u00e0": "Frosinone", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 4536, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Lazio", "Citt\u00e0": "Viterbo", "Categoria": "Domotica", "Tipo": "Appuntamento", "Budget (\u20ac)": 5087, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Lazio", "Citt\u00e0": "Viterbo", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 13416, "Prezzo Acquisto (\u20ac)": 1341.6}, {"Regione": "Lazio", "Citt\u00e0": "Viterbo", "Categoria": "Manutenzione", "Tipo": "Contratto", "Budget (\u20ac)": 1419, "Prezzo Acquisto (\u20ac)": 141.9}, {"Regione": "Lazio", "Citt\u00e0": "Rieti", "Categoria": "Impianto Fotovoltaico", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 8679, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Lazio", "Citt\u00e0": "Rieti", "Categoria": "Manutenzione", "Tipo": "Contratto", "Budget (\u20ac)": 1225, "Prezzo Acquisto (\u20ac)": 122.5}, {"Regione": "Lazio", "Citt\u00e0": "Rieti", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 11043, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Liguria", "Citt\u00e0": "Genova", "Categoria": "Impianto Fotovoltaico", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 4249, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Liguria", "Citt\u00e0": "Genova", "Categoria": "Manutenzione", "Tipo": "Appuntamento", "Budget (\u20ac)": 5246, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Liguria", "Citt\u00e0": "Genova", "Categoria": "Domotica", "Tipo": "Appuntamento", "Budget (\u20ac)": 11220, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Liguria", "Citt\u00e0": "La Spezia", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 2637, "Prezzo Acquisto (\u20ac)": 263.7}, {"Regione": "Liguria", "Citt\u00e0": "La Spezia", "Categoria": "Ristrutturazione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 8184, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Liguria", "Citt\u00e0": "Savona", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 10145, "Prezzo Acquisto (\u20ac)": 1014.5}, {"Regione": "Liguria", "Citt\u00e0": "Savona", "Categoria": "Ristrutturazione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 2950, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Lombardia", "Citt\u00e0": "Milano", "Categoria": "Ristrutturazione", "Tipo": "Contratto", "Budget (\u20ac)": 6482, "Prezzo Acquisto (\u20ac)": 648.2}, {"Regione": "Lombardia", "Citt\u00e0": "Milano", "Categoria": "Infissi e Serramenti", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 1625, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Lombardia", "Citt\u00e0": "Milano", "Categoria": "Ristrutturazione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 12472, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Lombardia", "Citt\u00e0": "Brescia", "Categoria": "Infissi e Serramenti", "Tipo": "Contratto", "Budget (\u20ac)": 6061, "Prezzo Acquisto (\u20ac)": 606.1}, {"Regione": "Lombardia", "Citt\u00e0": "Brescia", "Categoria": "Manutenzione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 2613, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Lombardia", "Citt\u00e0": "Bergamo", "Categoria": "Impianto Fotovoltaico", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 8519, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Lombardia", "Citt\u00e0": "Bergamo", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 1386, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Lombardia", "Citt\u00e0": "Bergamo", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 1178, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Lombardia", "Citt\u00e0": "Como", "Categoria": "Impianto Fotovoltaico", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 11350, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Lombardia", "Citt\u00e0": "Como", "Categoria": "Ristrutturazione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 10779, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Lombardia", "Citt\u00e0": "Monza", "Categoria": "Domotica", "Tipo": "Appuntamento", "Budget (\u20ac)": 4600, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Lombardia", "Citt\u00e0": "Monza", "Categoria": "Manutenzione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 6456, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Marche", "Citt\u00e0": "Ancona", "Categoria": "Infissi e Serramenti", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 11640, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Marche", "Citt\u00e0": "Ancona", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 3741, "Prezzo Acquisto (\u20ac)": 374.1}, {"Regione": "Marche", "Citt\u00e0": "Ancona", "Categoria": "Manutenzione", "Tipo": "Contratto", "Budget (\u20ac)": 8173, "Prezzo Acquisto (\u20ac)": 817.3}, {"Regione": "Marche", "Citt\u00e0": "Pesaro", "Categoria": "Impianto Fotovoltaico", "Tipo": "Contratto", "Budget (\u20ac)": 1743, "Prezzo Acquisto (\u20ac)": 174.3}, {"Regione": "Marche", "Citt\u00e0": "Pesaro", "Categoria": "Domotica", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 1553, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Marche", "Citt\u00e0": "Macerata", "Categoria": "Ristrutturazione", "Tipo": "Contratto", "Budget (\u20ac)": 13674, "Prezzo Acquisto (\u20ac)": 1367.4}, {"Regione": "Marche", "Citt\u00e0": "Macerata", "Categoria": "Ristrutturazione", "Tipo": "Appuntamento", "Budget (\u20ac)": 3350, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Molise", "Citt\u00e0": "Campobasso", "Categoria": "Ristrutturazione", "Tipo": "Contratto", "Budget (\u20ac)": 10346, "Prezzo Acquisto (\u20ac)": 1034.6}, {"Regione": "Molise", "Citt\u00e0": "Campobasso", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 4847, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Molise", "Citt\u00e0": "Campobasso", "Categoria": "Ristrutturazione", "Tipo": "Appuntamento", "Budget (\u20ac)": 7023, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Molise", "Citt\u00e0": "Campobasso", "Categoria": "Manutenzione", "Tipo": "Appuntamento", "Budget (\u20ac)": 13736, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Molise", "Citt\u00e0": "Isernia", "Categoria": "Infissi e Serramenti", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 6971, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Molise", "Citt\u00e0": "Isernia", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 4537, "Prezzo Acquisto (\u20ac)": 453.7}, {"Regione": "Molise", "Citt\u00e0": "Isernia", "Categoria": "Manutenzione", "Tipo": "Appuntamento", "Budget (\u20ac)": 13167, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Molise", "Citt\u00e0": "Isernia", "Categoria": "Impianto Fotovoltaico", "Tipo": "Contratto", "Budget (\u20ac)": 9237, "Prezzo Acquisto (\u20ac)": 923.7}, {"Regione": "Piemonte", "Citt\u00e0": "Torino", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 7689, "Prezzo Acquisto (\u20ac)": 768.9}, {"Regione": "Piemonte", "Citt\u00e0": "Torino", "Categoria": "Infissi e Serramenti", "Tipo": "Contratto", "Budget (\u20ac)": 12814, "Prezzo Acquisto (\u20ac)": 1281.4}, {"Regione": "Piemonte", "Citt\u00e0": "Alessandria", "Categoria": "Domotica", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 11784, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Piemonte", "Citt\u00e0": "Alessandria", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 5499, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Piemonte", "Citt\u00e0": "Novara", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 14474, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Piemonte", "Citt\u00e0": "Novara", "Categoria": "Impianto Fotovoltaico", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 14572, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Piemonte", "Citt\u00e0": "Cuneo", "Categoria": "Ristrutturazione", "Tipo": "Appuntamento", "Budget (\u20ac)": 8975, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Piemonte", "Citt\u00e0": "Cuneo", "Categoria": "Impianto Fotovoltaico", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 3897, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Piemonte", "Citt\u00e0": "Cuneo", "Categoria": "Ristrutturazione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 8868, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Piemonte", "Citt\u00e0": "Cuneo", "Categoria": "Infissi e Serramenti", "Tipo": "Contratto", "Budget (\u20ac)": 4269, "Prezzo Acquisto (\u20ac)": 426.9}, {"Regione": "Puglia", "Citt\u00e0": "Bari", "Categoria": "Ristrutturazione", "Tipo": "Contratto", "Budget (\u20ac)": 10705, "Prezzo Acquisto (\u20ac)": 1070.5}, {"Regione": "Puglia", "Citt\u00e0": "Bari", "Categoria": "Manutenzione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 1102, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Puglia", "Citt\u00e0": "Bari", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 7189, "Prezzo Acquisto (\u20ac)": 718.9}, {"Regione": "Puglia", "Citt\u00e0": "Bari", "Categoria": "Manutenzione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 5964, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Puglia", "Citt\u00e0": "Lecce", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 12645, "Prezzo Acquisto (\u20ac)": 1264.5}, {"Regione": "Puglia", "Citt\u00e0": "Lecce", "Categoria": "Ristrutturazione", "Tipo": "Contratto", "Budget (\u20ac)": 6411, "Prezzo Acquisto (\u20ac)": 641.1}, {"Regione": "Puglia", "Citt\u00e0": "Lecce", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 3275, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Puglia", "Citt\u00e0": "Lecce", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 6319, "Prezzo Acquisto (\u20ac)": 631.9}, {"Regione": "Puglia", "Citt\u00e0": "Taranto", "Categoria": "Ristrutturazione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 8851, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Puglia", "Citt\u00e0": "Taranto", "Categoria": "Manutenzione", "Tipo": "Contratto", "Budget (\u20ac)": 6035, "Prezzo Acquisto (\u20ac)": 603.5}, {"Regione": "Puglia", "Citt\u00e0": "Brindisi", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 8500, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Puglia", "Citt\u00e0": "Brindisi", "Categoria": "Manutenzione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 14585, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Puglia", "Citt\u00e0": "Brindisi", "Categoria": "Infissi e Serramenti", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 4417, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Puglia", "Citt\u00e0": "Brindisi", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 1226, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Sardegna", "Citt\u00e0": "Cagliari", "Categoria": "Impianto Fotovoltaico", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 7462, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Sardegna", "Citt\u00e0": "Cagliari", "Categoria": "Impianto Fotovoltaico", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 13586, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Sardegna", "Citt\u00e0": "Cagliari", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 14706, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Sardegna", "Citt\u00e0": "Cagliari", "Categoria": "Manutenzione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 7853, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Sardegna", "Citt\u00e0": "Sassari", "Categoria": "Infissi e Serramenti", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 14681, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Sardegna", "Citt\u00e0": "Sassari", "Categoria": "Ristrutturazione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 13250, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Sardegna", "Citt\u00e0": "Sassari", "Categoria": "Impianto Fotovoltaico", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 4021, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Sardegna", "Citt\u00e0": "Oristano", "Categoria": "Domotica", "Tipo": "Appuntamento", "Budget (\u20ac)": 5491, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Sardegna", "Citt\u00e0": "Oristano", "Categoria": "Manutenzione", "Tipo": "Appuntamento", "Budget (\u20ac)": 9458, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Sicilia", "Citt\u00e0": "Palermo", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 3086, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Sicilia", "Citt\u00e0": "Palermo", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 2593, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Sicilia", "Citt\u00e0": "Palermo", "Categoria": "Ristrutturazione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 2606, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Sicilia", "Citt\u00e0": "Palermo", "Categoria": "Domotica", "Tipo": "Appuntamento", "Budget (\u20ac)": 2649, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Sicilia", "Citt\u00e0": "Catania", "Categoria": "Infissi e Serramenti", "Tipo": "Contratto", "Budget (\u20ac)": 10192, "Prezzo Acquisto (\u20ac)": 1019.2}, {"Regione": "Sicilia", "Citt\u00e0": "Catania", "Categoria": "Infissi e Serramenti", "Tipo": "Contratto", "Budget (\u20ac)": 9914, "Prezzo Acquisto (\u20ac)": 991.4}, {"Regione": "Sicilia", "Citt\u00e0": "Catania", "Categoria": "Infissi e Serramenti", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 2618, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Sicilia", "Citt\u00e0": "Messina", "Categoria": "Infissi e Serramenti", "Tipo": "Contratto", "Budget (\u20ac)": 12402, "Prezzo Acquisto (\u20ac)": 1240.2}, {"Regione": "Sicilia", "Citt\u00e0": "Messina", "Categoria": "Impianto Fotovoltaico", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 7762, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Sicilia", "Citt\u00e0": "Trapani", "Categoria": "Impianto Fotovoltaico", "Tipo": "Contratto", "Budget (\u20ac)": 6644, "Prezzo Acquisto (\u20ac)": 664.4}, {"Regione": "Sicilia", "Citt\u00e0": "Trapani", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 8128, "Prezzo Acquisto (\u20ac)": 812.8}, {"Regione": "Sicilia", "Citt\u00e0": "Siracusa", "Categoria": "Domotica", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 11611, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Sicilia", "Citt\u00e0": "Siracusa", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 2910, "Prezzo Acquisto (\u20ac)": 291.0}, {"Regione": "Sicilia", "Citt\u00e0": "Siracusa", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 12296, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Sicilia", "Citt\u00e0": "Siracusa", "Categoria": "Manutenzione", "Tipo": "Contratto", "Budget (\u20ac)": 5388, "Prezzo Acquisto (\u20ac)": 538.8}, {"Regione": "Toscana", "Citt\u00e0": "Firenze", "Categoria": "Impianto Fotovoltaico", "Tipo": "Contratto", "Budget (\u20ac)": 11957, "Prezzo Acquisto (\u20ac)": 1195.7}, {"Regione": "Toscana", "Citt\u00e0": "Firenze", "Categoria": "Manutenzione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 9800, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Toscana", "Citt\u00e0": "Firenze", "Categoria": "Impianto Fotovoltaico", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 12958, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Toscana", "Citt\u00e0": "Firenze", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 12084, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Toscana", "Citt\u00e0": "Pisa", "Categoria": "Ristrutturazione", "Tipo": "Contratto", "Budget (\u20ac)": 5708, "Prezzo Acquisto (\u20ac)": 570.8}, {"Regione": "Toscana", "Citt\u00e0": "Pisa", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 1203, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Toscana", "Citt\u00e0": "Pisa", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 3668, "Prezzo Acquisto (\u20ac)": 366.8}, {"Regione": "Toscana", "Citt\u00e0": "Livorno", "Categoria": "Domotica", "Tipo": "Contratto", "Budget (\u20ac)": 11946, "Prezzo Acquisto (\u20ac)": 1194.6}, {"Regione": "Toscana", "Citt\u00e0": "Livorno", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 1670, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Toscana", "Citt\u00e0": "Arezzo", "Categoria": "Ristrutturazione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 10009, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Toscana", "Citt\u00e0": "Arezzo", "Categoria": "Manutenzione", "Tipo": "Appuntamento", "Budget (\u20ac)": 12060, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Toscana", "Citt\u00e0": "Arezzo", "Categoria": "Infissi e Serramenti", "Tipo": "Contratto", "Budget (\u20ac)": 12813, "Prezzo Acquisto (\u20ac)": 1281.3}, {"Regione": "Toscana", "Citt\u00e0": "Arezzo", "Categoria": "Domotica", "Tipo": "Appuntamento", "Budget (\u20ac)": 7458, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Toscana", "Citt\u00e0": "Siena", "Categoria": "Domotica", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 10006, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Toscana", "Citt\u00e0": "Siena", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 14418, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Toscana", "Citt\u00e0": "Siena", "Categoria": "Ristrutturazione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 7727, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Toscana", "Citt\u00e0": "Siena", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 12262, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Trentino-Alto Adige", "Citt\u00e0": "Trento", "Categoria": "Manutenzione", "Tipo": "Appuntamento", "Budget (\u20ac)": 1603, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Trentino-Alto Adige", "Citt\u00e0": "Trento", "Categoria": "Domotica", "Tipo": "Appuntamento", "Budget (\u20ac)": 1022, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Trentino-Alto Adige", "Citt\u00e0": "Trento", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 11342, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Trentino-Alto Adige", "Citt\u00e0": "Bolzano", "Categoria": "Infissi e Serramenti", "Tipo": "Contratto", "Budget (\u20ac)": 6772, "Prezzo Acquisto (\u20ac)": 677.2}, {"Regione": "Trentino-Alto Adige", "Citt\u00e0": "Bolzano", "Categoria": "Impianto Fotovoltaico", "Tipo": "Contratto", "Budget (\u20ac)": 1915, "Prezzo Acquisto (\u20ac)": 191.5}, {"Regione": "Umbria", "Citt\u00e0": "Perugia", "Categoria": "Ristrutturazione", "Tipo": "Contratto", "Budget (\u20ac)": 13400, "Prezzo Acquisto (\u20ac)": 1340.0}, {"Regione": "Umbria", "Citt\u00e0": "Perugia", "Categoria": "Manutenzione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 12267, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Umbria", "Citt\u00e0": "Perugia", "Categoria": "Manutenzione", "Tipo": "Contratto", "Budget (\u20ac)": 6219, "Prezzo Acquisto (\u20ac)": 621.9}, {"Regione": "Umbria", "Citt\u00e0": "Terni", "Categoria": "Manutenzione", "Tipo": "Contratto", "Budget (\u20ac)": 13787, "Prezzo Acquisto (\u20ac)": 1378.7}, {"Regione": "Umbria", "Citt\u00e0": "Terni", "Categoria": "Impianto Fotovoltaico", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 7562, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Umbria", "Citt\u00e0": "Terni", "Categoria": "Impianto Fotovoltaico", "Tipo": "Contratto", "Budget (\u20ac)": 12577, "Prezzo Acquisto (\u20ac)": 1257.7}, {"Regione": "Valle d'Aosta", "Citt\u00e0": "Aosta", "Categoria": "Manutenzione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 5275, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Valle d'Aosta", "Citt\u00e0": "Aosta", "Categoria": "Manutenzione", "Tipo": "Appuntamento", "Budget (\u20ac)": 9046, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Valle d'Aosta", "Citt\u00e0": "Aosta", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 13440, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Valle d'Aosta", "Citt\u00e0": "Aosta", "Categoria": "Ristrutturazione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 11320, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Veneto", "Citt\u00e0": "Venezia", "Categoria": "Ristrutturazione", "Tipo": "Appuntamento", "Budget (\u20ac)": 3067, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Veneto", "Citt\u00e0": "Venezia", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 2949, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Veneto", "Citt\u00e0": "Venezia", "Categoria": "Ristrutturazione", "Tipo": "Appuntamento", "Budget (\u20ac)": 7248, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Veneto", "Citt\u00e0": "Verona", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 3535, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Veneto", "Citt\u00e0": "Verona", "Categoria": "Manutenzione", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 6533, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Veneto", "Citt\u00e0": "Verona", "Categoria": "Domotica", "Tipo": "Appuntamento", "Budget (\u20ac)": 1909, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Veneto", "Citt\u00e0": "Padova", "Categoria": "Infissi e Serramenti", "Tipo": "Contratto", "Budget (\u20ac)": 9613, "Prezzo Acquisto (\u20ac)": 961.3}, {"Regione": "Veneto", "Citt\u00e0": "Padova", "Categoria": "Impianto Fotovoltaico", "Tipo": "Contratto", "Budget (\u20ac)": 10584, "Prezzo Acquisto (\u20ac)": 1058.4}, {"Regione": "Veneto", "Citt\u00e0": "Padova", "Categoria": "Domotica", "Tipo": "Lead da chiamare", "Budget (\u20ac)": 7064, "Prezzo Acquisto (\u20ac)": 40.0}, {"Regione": "Veneto", "Citt\u00e0": "Padova", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 2944, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Veneto", "Citt\u00e0": "Vicenza", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 7473, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Veneto", "Citt\u00e0": "Vicenza", "Categoria": "Impianto Fotovoltaico", "Tipo": "Appuntamento", "Budget (\u20ac)": 9399, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Veneto", "Citt\u00e0": "Treviso", "Categoria": "Infissi e Serramenti", "Tipo": "Appuntamento", "Budget (\u20ac)": 14951, "Prezzo Acquisto (\u20ac)": 80.0}, {"Regione": "Veneto", "Citt\u00e0": "Treviso", "Categoria": "Impianto Fotovoltaico", "Tipo": "Contratto", "Budget (\u20ac)": 13881, "Prezzo Acquisto (\u20ac)": 1388.1}];
 
     function aggiornaCrediti() {
       document.getElementById('crediti').innerText = crediti;
-      const percent = Math.max(0, Math.min(100, Math.floor((crediti / 200) * 100)));
-      document.getElementById('creditBar').style.width = percent + '%';
     }
 
     function aggiornaCarrello() {
-      const box = document.getElementById('listaCarrello');
-      box.innerHTML = '';
-      let totaleCrediti = 0;
-      let totaleEuro = 0;
+      const container = document.getElementById('listaCarrello');
+      container.innerHTML = ''; righe = 0;
+      let totale = 0;
+      let righe = 0;
       carrello.forEach((item, i) => {
-        const c = Math.ceil(item.prezzo / CREDIT_VALUE);
-        totaleCrediti += c;
-        totaleEuro += item.prezzo;
-        box.innerHTML += `<div class='carrello-voce'>
-          <span>${item.titolo} - €${item.prezzo} (Crediti: ${c})</span>
-          <button class='btn btn-sm btn-danger' onclick='rimuoviDalCarrello(${i}, ${c})'>X</button>
-        </div>`;
+        totale += item.prezzo;
+        righe++;
+        container.innerHTML += `
+          <div class="carrello-voce">
+            <span>${item.titolo} - €${item.prezzo}</span>
+            <button class="btn btn-sm btn-danger" onclick="rimuoviDalCarrello(${i}, '${item.tipo}', ${item.crediti})">Rimuovi</button>
+          </div>`;
       });
-      document.getElementById('totaleCrediti').innerText = totaleCrediti;
-      document.getElementById('totaleEuro').innerText = totaleEuro;
+      document.getElementById('totaleEuro').innerText = totale;
+      document.getElementById('numeroClienti').innerText = righe;
     }
 
-    function rimuoviDalCarrello(index, creditiUsati) {
-      crediti += creditiUsati;
+    function rimuoviDalCarrello(index, tipo, creditiDaRestituire) {
+      if (tipo === "Lead" || tipo === "Appuntamento") {
+        crediti += creditiDaRestituire;
+        aggiornaCrediti();
+      }
       carrello.splice(index, 1);
-      aggiornaCrediti();
       aggiornaCarrello();
+        showAlert('🎉 Cliente acquisito con successo!');
+    
     }
 
-    function acquisisciCliente(btn, titolo, prezzo) {
-      const c = Math.ceil(prezzo / CREDIT_VALUE);
-      if (crediti >= c) {
-        crediti -= c;
-        carrello.push({ titolo, prezzo });
+    function acquisisciCliente(btn, titolo, tipo, prezzoTotale, creditiRichiesti) {
+      if (tipo === "Contratto" || crediti >= creditiRichiesti) {
+        if (tipo === "Lead" || tipo === "Appuntamento") {
+          crediti -= creditiRichiesti;
+          aggiornaCrediti();
+        }
+        carrello.push({ titolo, tipo, prezzo: prezzoTotale, crediti: creditiRichiesti });
         btn.classList.remove('btn-primary');
         btn.classList.add('btn-success');
-        btn.innerText = 'Acquistato';
+        btn.innerText = 'Aggiunto';
         btn.disabled = true;
-        aggiornaCrediti();
         aggiornaCarrello();
+        showAlert('🎉 Cliente acquisito con successo!');
+    
       } else {
         alert("Crediti insufficienti.");
       }
     }
 
+    
     function checkout() {
       if (carrello.length === 0) return alert("Carrello vuoto.");
-      let messaggio = "Hai acquistato:\n" + carrello.map(x => "- " + x.titolo + " (€" + x.prezzo + ")").join("\n");
-      alert(messaggio);
+      let elenco = carrello.map(c => `<li>${c.titolo} - €${c.prezzo} ${c.crediti ? `(Crediti: ${c.crediti})` : ''}</li>`).join('');
+      let totale = carrello.reduce((acc, c) => acc + c.prezzo, 0);
+      document.getElementById('riepilogoCheckout').innerHTML = `
+        <p>Hai acquistato ${carrello.length} clienti:</p>
+        <ul>${elenco}</ul>
+        <p class="mt-2"><strong>Totale:</strong> €${totale}</p>`;
+      var myModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
+      myModal.show();
       carrello = [];
       aggiornaCarrello();
+    }
+    
+      if (carrello.length === 0) return alert("Carrello vuoto.");
+      let elenco = carrello.map(x => "- " + x.titolo + " (€" + x.prezzo + ")").join("\n");
+      alert("Hai acquistato:\n" + elenco);
+      carrello = [];
+      aggiornaCarrello();
+        showAlert('🎉 Cliente acquisito con successo!');
+    
     }
 
     function svuotaCarrello() {
       if (confirm("Sicuro di svuotare il carrello?")) {
         carrello = [];
         aggiornaCarrello();
+        showAlert('🎉 Cliente acquisito con successo!');
+    
       }
-    }
-
-    function popolaSelect(id, vals) {
-      const sel = document.getElementById(id);
-      sel.innerHTML = "<option value=''>Tutti</option>" + [...new Set(vals)].sort().map(v => `<option>${v}</option>`).join('');
     }
 
     function filtra() {
       const reg = document.getElementById('filtroRegione').value;
       const cit = document.getElementById('filtroCitta').value;
       const cat = document.getElementById('filtroCategoria').value;
-      const tipo = document.getElementById('filtroTipo').value;
+      const tipoFiltro = document.getElementById('filtroTipo').value;
       const box = document.getElementById('listaRichieste');
       box.innerHTML = '';
       dati.forEach(r => {
-        if ((reg && r.Regione !== reg) || (cit && r["Città"] !== cit) || (cat && r.Categoria !== cat) || (tipo && r.Tipo !== tipo)) return;
-        let prezzo = parseFloat(r["Prezzo Acquisto (€)"]) || 0;
-        const badge = r.Tipo.includes("Lead") ? 'badge-lead' : r.Tipo.includes("Appuntamento") ? 'badge-appuntamento' : 'badge-contratto';
-        const c = Math.ceil(prezzo / CREDIT_VALUE);
-        const dis = crediti < c ? 'disabled' : '';
+        if ((reg && r.Regione !== reg) || (cit && r["Città"] !== cit) || (cat && r.Categoria !== cat) || (tipoFiltro && r.Tipo !== tipoFiltro)) return;
+
+        let prezzo = 0;
+        let creditiNecessari = 0;
+        if (r.Tipo === "Lead") {
+          prezzo = CREDIT_VALUE;
+          creditiNecessari = 1;
+        } else if (r.Tipo === "Appuntamento") {
+          prezzo = CREDIT_VALUE * 2;
+          creditiNecessari = 2;
+        } else if (r.Tipo === "Contratto") {
+          prezzo = Math.round(parseFloat(r["Budget (€)"]) * 0.10);
+          creditiNecessari = 0;
+        }
+
+        const badge = r.Tipo === "Lead" ? 'badge-lead' : r.Tipo === "Appuntamento" ? 'badge-appuntamento' : 'badge-contratto';
+        const disabled = (r.Tipo !== "Contratto" && crediti < creditiNecessari) ? 'disabled' : '';
         const titolo = r.Categoria + ' - ' + r["Città"];
-        box.innerHTML += `<div class='card p-3'>
-          <h5 class='card-title text-info'>${titolo} <span class='badge ${badge}'>${r.Tipo}</span></h5>
-          <p>Regione: <span class='badge badge-regione'>${r.Regione}</span> | Città: ${r["Città"]}</p>
-          <p>Categoria: <span class='badge badge-categoria'>${r.Categoria}</span> | Budget: €${r["Budget (€)"]} | Prezzo: €${prezzo}</p>
-          <button class='btn btn-primary btn-sm' onclick="acquisisciCliente(this, '${titolo}', ${prezzo})" ${dis}>Acquisisci Cliente</button>
-        </div>`;
+
+        box.innerHTML += `
+          <div class="card">
+            <h5 class="card-title">${titolo} <span class="badge ${badge}">${r.Tipo}</span></h5>
+            <p><strong>Regione:</strong> ${r.Regione} | <strong>Città:</strong> ${r["Città"]}</p>
+            <p><strong>Categoria:</strong> ${r.Categoria} | <strong>Budget:</strong> €${r["Budget (€)"]} | <strong>Prezzo:</strong> €${prezzo}</p>
+            <button class="btn btn-primary btn-sm" onclick="acquisisciCliente(this, '${titolo}', '${r.Tipo}', ${prezzo}, ${creditiNecessari})" ${disabled}>Acquisisci Cliente</button>
+          </div>`;
       });
+    }
+
+    function popolaSelect(id, vals) {
+      const sel = document.getElementById(id);
+      sel.innerHTML = "<option value=''>Tutti</option>" + [...new Set(vals)].sort().map(v => `<option>${v}</option>`).join('');
     }
 
     window.onload = function() {
@@ -207,6 +210,35 @@
       filtra();
       aggiornaCrediti();
     }
-  </script>
+  
+    function showAlert(msg) {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.textContent = msg;
+      alertBox.classList.remove('d-none');
+      setTimeout(() => alertBox.classList.add('d-none'), 2500);
+    }
+    </script>
+    
+
+<!-- Modal -->
+<div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="checkoutModalLabel">✅ Checkout Completato</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+      </div>
+      <div class="modal-body" id="riepilogoCheckout">
+        <!-- Qui va il riepilogo dinamico -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
