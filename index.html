@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TrovaClienti</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <style>
     body { background: #f4f6f8; font-family: 'Segoe UI', sans-serif; }
     .card { margin-bottom: 20px; border-left: 4px solid #dee2e6; }
@@ -26,24 +26,16 @@
 
     <div class="row mb-4">
       <div class="col-md-3 mb-2">
-        <select id="filtroRegione" class="form-select">
-          <option value="">Tutte le Regioni</option>
-        </select>
+        <select id="filtroRegione" class="form-select"><option value="">Tutte le Regioni</option></select>
       </div>
       <div class="col-md-3 mb-2">
-        <select id="filtroCitta" class="form-select">
-          <option value="">Tutte le Città</option>
-        </select>
+        <select id="filtroCitta" class="form-select"><option value="">Tutte le Città</option></select>
       </div>
       <div class="col-md-3 mb-2">
-        <select id="filtroCategoria" class="form-select">
-          <option value="">Tutte le Categorie</option>
-        </select>
+        <select id="filtroCategoria" class="form-select"><option value="">Tutte le Categorie</option></select>
       </div>
       <div class="col-md-3 mb-2">
-        <select id="filtroTipo" class="form-select">
-          <option value="">Tutti i Tipi</option>
-        </select>
+        <select id="filtroTipo" class="form-select"><option value="">Tutti i Tipi</option></select>
       </div>
     </div>
 
@@ -57,7 +49,6 @@
 
   <script>
     const SHEET_URL = 'https://opensheet.elk.sh/1dg8Gs_1a-uXU5b5yWSJTj6EFgB15-ropfQm1NVXQVFY/1';
-
     let crediti = parseInt(localStorage.getItem('crediti')) || 10;
     document.getElementById('crediti').innerText = crediti;
     let datiGlobali = [];
@@ -88,13 +79,9 @@
       aggiornaCrediti();
     }
 
-    async function caricaDati() {
-      const res = await fetch(SHEET_URL);
-      const dati = await res.json();
-      datiGlobali = dati;
-      popolaFiltri(dati);
-      mostraRichieste(dati);
-      aggiornaCarrello();
+    function popolaSelect(id, valori) {
+      const select = document.getElementById(id);
+      select.innerHTML = `<option value="">Tutti</option>` + valori.map(v => `<option>${v}</option>`).join('');
     }
 
     function popolaFiltri(dati) {
@@ -105,17 +92,11 @@
       popolaSelect('filtroTipo', unici('Tipo'));
     }
 
-    function popolaSelect(id, valori) {
-      const select = document.getElementById(id);
-      select.innerHTML = `<option value="">Tutti</option>` + valori.map(v => `<option>${v}</option>`).join('');
-    }
-
     function mostraRichieste(dati) {
       const regione = document.getElementById('filtroRegione').value;
       const citta = document.getElementById('filtroCitta').value;
       const categoria = document.getElementById('filtroCategoria').value;
       const tipo = document.getElementById('filtroTipo').value;
-
       const container = document.getElementById('listaRichieste');
       container.innerHTML = '';
 
@@ -141,7 +122,7 @@
                 <p class="card-text">${r.Descrizione || ''}</p>
                 <p><strong>Regione:</strong> ${r.Regione} | <strong>Città:</strong> ${r['Città']}</p>
                 <p><strong>Categoria:</strong> ${r.Categoria} | <strong>Budget:</strong> €${r['Budget (€)']} | <strong>Prezzo Acquisto:</strong> €${prezzo}</p>
-                <button class="btn btn-primary btn-acquista" ${disabled} onclick='acquistaCliente(this, ${index}, ${prezzo})'>Acquisisci Cliente</button>
+                <button class="btn btn-primary btn-acquista" ${disabled} onclick="acquistaCliente(this, ${index}, ${prezzo})">Acquisisci Cliente</button>
               </div>
             </div>`;
         }
@@ -159,10 +140,20 @@
         btn.classList.add('btn-success');
         btn.innerText = 'Acquistato';
         btn.disabled = true;
+        btn.removeAttribute("onclick");
       }
     }
 
-    document.querySelectorAll('select').forEach(i => i.addEventListener('change', () => mostraRichieste(datiGlobali)));
+    async function caricaDati() {
+      const res = await fetch(SHEET_URL);
+      const dati = await res.json();
+      datiGlobali = dati;
+      popolaFiltri(dati);
+      mostraRichieste(dati);
+      aggiornaCarrello();
+      document.querySelectorAll('select').forEach(i => i.addEventListener('change', () => mostraRichieste(datiGlobali)));
+    }
+
     window.onload = caricaDati;
   </script>
 </body>
